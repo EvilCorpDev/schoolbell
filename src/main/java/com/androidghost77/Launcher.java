@@ -1,14 +1,14 @@
 package com.androidghost77;
 
 import com.androidghost77.schedule.BellScheduler;
-import com.androidghost77.settings.SettingsReader;
+import com.androidghost77.settings.io.SettingsReader;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class Launcher extends Application {
 
-    private static String propertiesPath = "/Users/androidghost77/dev/schoollbell/src/main/resources/application.properties";
+    private static String propertiesPath = "D:\\Dev\\schoolbell\\src\\main\\resources\\application.properties";
 
     public void start(Stage primaryStage) throws Exception {
         SettingsReader reader = new SettingsReader();
@@ -23,7 +23,6 @@ public class Launcher extends Application {
         Application.launch(args);
     }
 
-    //TODO: don't stop music second time
     //TODO: add exception days
     //TODO: configure duration
 }

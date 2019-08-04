@@ -1,0 +1,8 @@
+server:
+    port: 3000
+spring:
+    application:
+        name: bell
+bell:
+    default:
+        profile: "defaultProfile"

@@ -10,9 +10,22 @@
 
     <properties>
         <lombok.version>1.18.8</lombok.version>
+        <spring.boot.version>2.1.6.RELEASE</spring.boot.version>
     </properties>
 
     <dependencies>
+        <!-- Spring dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

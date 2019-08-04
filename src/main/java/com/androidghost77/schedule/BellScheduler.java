@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 public class BellScheduler {
 
-    private static final long DAY_MILLISECONDS = 5 * 60 * 1000L;
+    private static final long DAY_MILLISECONDS = 1 * 60 * 1000L;
 
     public void schedule(Properties properties) {
         String bellSchedule = properties.getProperty("bell.schedule");
@@ -50,14 +50,8 @@ public class BellScheduler {
 
         @Override
         public void run() {
-            final Player player = new AudioPlayer();
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    player.play(filePath);
-                }
-            }, 0, DAY_MILLISECONDS);
+            Player player = new AudioPlayer();
+            player.play(filePath);
             try {
                 Thread.sleep(duration);
             } catch (InterruptedException e) {
