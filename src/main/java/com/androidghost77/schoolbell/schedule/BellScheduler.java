@@ -12,17 +12,22 @@ import java.util.stream.IntStream;
 
 import org.springframework.util.CollectionUtils;
 
+import com.androidghost77.schoolbell.model.ExceptionDay;
 import com.androidghost77.schoolbell.model.Schedule;
 import com.androidghost77.schoolbell.player.Player;
 import com.androidghost77.schoolbell.player.impl.AudioPlayer;
+import com.androidghost77.schoolbell.repo.ExceptionDayRepo;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@RequiredArgsConstructor
 public class BellScheduler implements Scheduler<Schedule> {
 
     private static final long DAY_MILLISECONDS = 5 * 60 * 1000L;
     private static final List<Timer> timers = new ArrayList<>();
+
+    private final ExceptionDayRepo exceptionDayRepo;
 
     @Override
     public void schedule(List<Schedule> scheduleList) {
@@ -59,18 +64,22 @@ public class BellScheduler implements Scheduler<Schedule> {
         long initialDelay = nextRun.getSeconds() * 1000L;
 
         timers.add(timer);
-        timer.scheduleAtFixedRate(new PlayTask(duration, trackPath), initialDelay, DAY_MILLISECONDS);
+        timer.scheduleAtFixedRate(new PlayTask(duration, trackPath, exceptionDayRepo), initialDelay, DAY_MILLISECONDS);
     }
 
     @Slf4j
     @RequiredArgsConstructor
-    static class PlayTask extends TimerTask {
+    private static class PlayTask extends TimerTask {
 
         private final long duration;
         private final String trackPath;
+        private final ExceptionDayRepo exceptionDayRepo;
 
         @Override
         public void run() {
+            if (todayIsExceptionDay()) {
+                return;
+            }
             Player player = new AudioPlayer();
             player.play(trackPath);
             try {
@@ -80,6 +89,20 @@ public class BellScheduler implements Scheduler<Schedule> {
                 throw new RuntimeException(e);
             }
             player.stop();
+        }
+
+        private boolean todayIsExceptionDay() {
+            LocalDate today = LocalDate.now();
+            return exceptionDayRepo.findAll()
+                    .stream()
+                    .anyMatch(item -> compareExceptionDays(today, item));
+        }
+
+        private boolean compareExceptionDays(LocalDate today, ExceptionDay item) {
+            if (item.isRepeatable()) {
+                return today.getDayOfWeek().getValue() == item.getDayOfWeek();
+            }
+            return today.isEqual(item.getSpecificDay());
         }
     }
 }
