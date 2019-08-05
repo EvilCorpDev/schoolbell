@@ -1,4 +1,4 @@
-package com.androidghost77.player;
+package com.androidghost77.schoolbell.player;
 
 public interface Player {
 

@@ -1,8 +1,8 @@
-package com.androidghost77.player.impl;
+package com.androidghost77.schoolbell.player.impl;
 
 import java.io.File;
 
-import com.androidghost77.player.Player;
+import com.androidghost77.schoolbell.player.Player;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
