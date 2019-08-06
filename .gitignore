@@ -27,6 +27,7 @@
 .idea/dataSources.xml
 .idea/vcs.xml
 .idea/compiler.xml
+.idea/runConfiguration/*
 
 # Gradle
 .idea/**/gradle.xml
