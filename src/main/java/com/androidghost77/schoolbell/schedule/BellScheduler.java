@@ -14,8 +14,8 @@ import org.springframework.util.CollectionUtils;
 
 import com.androidghost77.schoolbell.model.ExceptionDay;
 import com.androidghost77.schoolbell.model.Schedule;
-import com.androidghost77.schoolbell.player.Player;
-import com.androidghost77.schoolbell.player.impl.AudioPlayer;
+import com.androidghost77.schoolbell.service.player.Player;
+import com.androidghost77.schoolbell.service.player.impl.AudioPlayer;
 import com.androidghost77.schoolbell.repo.ExceptionDayRepo;
 
 import lombok.RequiredArgsConstructor;
