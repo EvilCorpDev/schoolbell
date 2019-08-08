@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/tabs.css">
     <link rel="stylesheet" href="css/checkbox.css">
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css"/>
     <script src="https://kit.fontawesome.com/6fe15d2ae4.js"></script>
@@ -18,6 +18,7 @@
     <script src="js/jquery-3.4.1.min.js"></script>
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/timer.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
     <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
@@ -62,7 +63,7 @@
                                 <div class="col-12">
                                     <div class="form-group">
                                         <div class="input-group date" id="datetimepicker6" data-target-input="nearest">
-                                            <input type="text" class="form-control datetimepicker-input text-center"
+                                            <input type="text" class="form-control datetimepicker-input text-center text-primary"
                                                    data-target="#datetimepicker6" placeholder="Select time"/>
                                             <div class="input-group-append" data-target="#datetimepicker6"
                                                  data-toggle="datetimepicker">
@@ -74,15 +75,27 @@
                                 <script type="text/javascript">
                                     $(function () {
                                         $('#datetimepicker6').datetimepicker({
-                                            format: 'LT'
+                                            format: 'LT',
+                                            use24hours: 'true'
+                                        });
+                                        $('#datetimepicker6').on('change.datetimepicker', function (e) {
+                                            console.log(e.date)
+                                            updateTimer()
                                         });
                                     });
                                 </script>
                             </div>
                             <div class="row">
                                 <div class="col-7">
-                                    <div class="form-group">
-                                        <input class="form-control text-center" type="number" placeholder="Duration">
+                                    <div class="row">
+                                        <div class="col-6 pr-1">
+                                            <input class="form-control text-center" type="number"
+                                                   placeholder="From sec">
+                                        </div>
+                                        <div class="col-6 pl-1  pr-0">
+                                            <input class="form-control text-center" type="number"
+                                                   placeholder="Duration">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-5">
@@ -122,8 +135,15 @@
                             </div>
                             <div class="row">
                                 <div class="col-7">
-                                    <div class="form-group">
-                                        <input class="form-control text-center" type="number" placeholder="Duration">
+                                    <div class="row">
+                                        <div class="col-6 pr-1">
+                                            <input class="form-control text-center" type="number"
+                                                   placeholder="From sec">
+                                        </div>
+                                        <div class="col-6 pl-1  pr-0">
+                                            <input class="form-control text-center" type="number"
+                                                   placeholder="Duration">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-5">
@@ -163,8 +183,15 @@
                             </div>
                             <div class="row">
                                 <div class="col-7">
-                                    <div class="form-group">
-                                        <input class="form-control text-center" type="number" placeholder="Duration">
+                                    <div class="row">
+                                        <div class="col-6 pr-1">
+                                            <input class="form-control text-center" type="number"
+                                                   placeholder="From sec">
+                                        </div>
+                                        <div class="col-6 pl-1  pr-0">
+                                            <input class="form-control text-center" type="number"
+                                                   placeholder="Duration">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-5">
@@ -192,7 +219,32 @@
                             <span class="el-switch-style"></span>
                         </label>
                     </div>
-                    <p>Next bell will rings in 12 minutes</p>
+                    <p>Next bell will rings in:</p>
+                    <div class="timer container-fluid text-primary">
+                        <div class="row">
+                            <div class="col-2 rounded d-flex flex-column justify-content-center align-items-center">
+                                <div class="timer-days">00</div>
+                                <p class="row mb-0">
+                                    <small>days</small>
+                                </p>
+                            </div>
+                            <p>:</p>
+                            <div class="col-2 rounded d-flex flex-column justify-content-center align-items-center">
+                                <div class="timer-hours">00</div>
+                                <small>hours</small>
+                            </div>
+                            <p>:</p>
+                            <div class="col-2 rounded d-flex flex-column justify-content-center align-items-center">
+                                <div class="timer-mins">00</div>
+                                <small>mins</small>
+                            </div>
+                            <p>:</p>
+                            <div class="col-2 rounded d-flex flex-column justify-content-center align-items-center">
+                                <div class="timer-secs">00</div>
+                                <small>secs</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
