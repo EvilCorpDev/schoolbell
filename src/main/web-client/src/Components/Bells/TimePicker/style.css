@@ -1,0 +1,11 @@
+.time-popup {
+    background-color: white;
+    z-index: 1000;
+    position: absolute;
+    min-width: 240px;
+}
+
+.arr-btn:hover {
+    background-color: #5a6268;
+    color: white;
+}

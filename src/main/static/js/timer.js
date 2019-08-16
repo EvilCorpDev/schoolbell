@@ -31,16 +31,16 @@ function getTimesLeft() {
 
 function updateTimer() {
 // Update the count down every 1 second
-    var timerId = setInterval(function () {
+    const timerId = setInterval(function () {
 
         // Find the distance between now and the count down date
-        var distance = getTimesLeft();
+        const distance = getTimesLeft();
 
         // Time calculations for days, hours, minutes and seconds
-        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
         // Display the result in the element
         setTimerNumbers(days, hours, minutes, seconds);
