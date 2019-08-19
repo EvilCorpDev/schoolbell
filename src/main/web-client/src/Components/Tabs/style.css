@@ -1,0 +1,28 @@
+.add-profile {
+    color: #007bff;
+    border: 1px solid transparent;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+    display: block;
+    padding: .5rem 1rem;
+    text-decoration: none;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+button.active.focus,
+button.active:focus,
+button.focus,
+button.focus:active,
+button:active:focus,
+button:focus {
+    outline: 0 !important;
+    outline-offset: 0  !important;
+    background-image: none  !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none  !important;
+}
+
+.add-profile:hover {
+    color: #1762ff
+}

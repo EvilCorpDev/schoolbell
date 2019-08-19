@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import './style.css'
 
 export default class TabHeader extends React.Component {
     static propTypes = {
@@ -14,7 +15,7 @@ export default class TabHeader extends React.Component {
             const classList = profile.active ? "nav-link active" : "nav-link";
             return (
                 <li className="nav-item" key={profile.name}>
-                    <a className={classList} href="#">{profile.name}</a>
+                    <button className={classList}>{profile.name}</button>
                 </li>
             )
         });
@@ -23,7 +24,7 @@ export default class TabHeader extends React.Component {
             <ul className="nav nav-tabs">
                 {headers}
                 <li className="nav-item">
-                    <a className="nav-link" href="#"><i className="fas fa-plus"/> Add profile</a>
+                    <button className="nav-link add-profile"><i className="fas fa-plus"/> Add profile</button>
                 </li>
             </ul>
         )

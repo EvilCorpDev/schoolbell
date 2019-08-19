@@ -1,8 +1,9 @@
 import React from 'react'
 import moment from 'moment'
+import uuidv4 from 'uuid/v4'
 import Switch from 'react-switch'
 import TabHeader from './Tabs/TabHeader'
-import Tab from './Tabs/Tab'
+import TabLeftColumn from './Tabs/TabLeftColumn'
 import Timer from './Timer'
 
 export default class App extends React.Component {
@@ -23,6 +24,7 @@ export default class App extends React.Component {
         this.setRestartTimer = this.setRestartTimer.bind(this);
         this.getRestartTimer = this.getRestartTimer.bind(this);
         this.getTimerDistance = this.getTimerDistance.bind(this);
+        this.removeScheduleItem = this.removeScheduleItem.bind(this);
     }
 
     componentDidMount() {
@@ -30,7 +32,7 @@ export default class App extends React.Component {
         this.setState({
             profiles: [{name: "Default", active: true}],
             profile: {
-                scheduleItems: [{id:'someid', time: '', startSec: '', duration: ''}],
+                scheduleItems: [{id: 'someid', time: '', startSec: '', duration: ''}],
                 isActive: true
             },
             timerIsOn: true
@@ -46,8 +48,8 @@ export default class App extends React.Component {
                 <TabHeader profiles={profiles}/>
                 <div className="border p-3">
                     <div className="row">
-                        <Tab scheduleItems={profile.scheduleItems}
-                             handleTimePickerChanged={this.handleTimePickerChanged}/>
+                        <TabLeftColumn scheduleItems={profile.scheduleItems} removeScheduleItem={this.removeScheduleItem}
+                             handleTimePickerChanged={this.handleTimePickerChanged} />
                         <div className="container w-25 mt-2 ml-0 p-0 mr-5">
                             <h2>Main profile</h2>
                             <div className="container row">
@@ -82,17 +84,23 @@ export default class App extends React.Component {
         ev.preventDefault();
         const {profile} = this.state;
         const items = profile.scheduleItems.slice();
-        items.push({time: '', id: App.getNextId(items)});
+        items.push({time: '', id: uuidv4()});
         profile.scheduleItems = items;
-
         this.setState({
             profile: profile
         })
     };
 
-    static getNextId(items) {
-        return 'newScheduledItem' + (items.length + 1);
-    }
+    removeScheduleItem(itemId) {
+        const {profile} = this.state;
+        const items = profile.scheduleItems.slice().filter(item => item.id !== itemId);
+        this.setState({
+            profile: {
+                scheduleItems: items,
+                isActive: this.state.profile.isActive
+            }
+        })
+    };
 
     handleProfileActiveChange(checked) {
         const {profile} = this.state;
@@ -103,10 +111,10 @@ export default class App extends React.Component {
         })
     }
 
-    handleTimePickerChanged(newState, timePickerId) {
+    handleTimePickerChanged(timeStr, timePickerId) {
         const newScheduledItems = this.state.profile.scheduleItems.slice();
         const item = newScheduledItems.find(item => item.id === timePickerId);
-        item.time = newState.hours + ":" + newState.mins;
+        item.time = timeStr;
         this.setState({
             profile: {
                 scheduleItems: newScheduledItems,

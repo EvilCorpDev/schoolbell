@@ -1,0 +1,14 @@
+.del-btn {
+    color: #6c757d;
+    z-index: 1000;
+    right: -0.6rem;
+    margin-top: 2rem;
+    position: absolute;
+    border:none;
+    background-color: #f8f9fa;
+    padding: 0;
+}
+
+.del-btn:hover {
+    color: #a71d2a;
+}
