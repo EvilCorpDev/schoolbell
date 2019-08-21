@@ -15,9 +15,9 @@ export default class TabLeftColumn extends React.Component {
         });
         return (
             <div className="tab container col-6 ml-5">
-                <form>
+                <div>
                     {bells}
-                </form>
+                </div>
             </div>
         )
     }

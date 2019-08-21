@@ -12,7 +12,7 @@ export default class TabHeader extends React.Component {
 
     render() {
         const headers = this.props.profiles.map(profile => {
-            const classList = profile.active ? "nav-link active" : "nav-link";
+            const classList = profile.active ? "nav-link active" : "nav-link passive-link";
             return (
                 <li className="nav-item" key={profile.name}>
                     <button className={classList}>{profile.name}</button>

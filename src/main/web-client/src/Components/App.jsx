@@ -1,10 +1,9 @@
 import React from 'react'
 import moment from 'moment'
 import uuidv4 from 'uuid/v4'
-import Switch from 'react-switch'
 import TabHeader from './Tabs/TabHeader'
 import TabLeftColumn from './Tabs/TabLeftColumn'
-import Timer from './Timer'
+import TabRightColumn from './Tabs/TabRightColumn'
 
 export default class App extends React.Component {
     constructor(props) {
@@ -25,14 +24,17 @@ export default class App extends React.Component {
         this.getRestartTimer = this.getRestartTimer.bind(this);
         this.getTimerDistance = this.getTimerDistance.bind(this);
         this.removeScheduleItem = this.removeScheduleItem.bind(this);
+        this.handleEditProfileName = this.handleEditProfileName.bind(this);
     }
 
     componentDidMount() {
         //const timerIsOn = profile.scheduleItems.size !== 0;
         this.setState({
-            profiles: [{name: "Default", active: true}],
+            profiles: [{id: 'defaultid', name: 'Default', active: true}, {id: 'excid', name: 'Exc 1', active: false}],
             profile: {
-                scheduleItems: [{id: 'someid', time: '', startSec: '', duration: ''}],
+                id: 'defaultid',
+                name: 'Default',
+                scheduleItems: [{id: 'someid', time: '', startSec: '1', duration: ''}],
                 isActive: true
             },
             timerIsOn: true
@@ -48,21 +50,13 @@ export default class App extends React.Component {
                 <TabHeader profiles={profiles}/>
                 <div className="border p-3">
                     <div className="row">
-                        <TabLeftColumn scheduleItems={profile.scheduleItems} removeScheduleItem={this.removeScheduleItem}
-                             handleTimePickerChanged={this.handleTimePickerChanged} />
-                        <div className="container w-25 mt-2 ml-0 p-0 mr-5">
-                            <h2>Main profile</h2>
-                            <div className="container row">
-                                <div className="mr-2 mt-1">Profile is active</div>
-                                <Switch onChange={this.handleProfileActiveChange} checked={profile.isActive}
-                                        onHandleColor="#2693e6" onColor="#86d3ff" offColor="#888" offHandleColor="#fff"
-                                        handleDiameter={30} height={20} width={48} uncheckedIcon={false}
-                                        checkedIcon={false}/>
-                            </div>
-                            <p>Next bell will rings in:</p>
-                            <Timer setRestartTimer={this.setRestartTimer} getRestartTimer={this.getRestartTimer}
-                                   getTimerDistance={this.getTimerDistance}/>
-                        </div>
+                        <TabLeftColumn scheduleItems={profile.scheduleItems}
+                                       removeScheduleItem={this.removeScheduleItem}
+                                       handleTimePickerChanged={this.handleTimePickerChanged}/>
+                        <TabRightColumn handleProfileActiveChange={this.handleProfileActiveChange}
+                                        setRestartTimer={this.setRestartTimer} getRestartTimer={this.getRestartTimer}
+                                        getTimerDistance={this.getTimerDistance} profile={profile}
+                                        handleEditProfileName={this.handleEditProfileName}/>
                     </div>
 
                     <div className="row mt-4">
@@ -82,9 +76,9 @@ export default class App extends React.Component {
 
     addNewScheduleItem = ev => {
         ev.preventDefault();
-        const {profile} = this.state;
+        const profile = {...this.state.profile};
         const items = profile.scheduleItems.slice();
-        items.push({time: '', id: uuidv4()});
+        items.push({time: '', startSec: '', duration: '', id: uuidv4()});
         profile.scheduleItems = items;
         this.setState({
             profile: profile
@@ -92,18 +86,14 @@ export default class App extends React.Component {
     };
 
     removeScheduleItem(itemId) {
-        const {profile} = this.state;
-        const items = profile.scheduleItems.slice().filter(item => item.id !== itemId);
-        this.setState({
-            profile: {
-                scheduleItems: items,
-                isActive: this.state.profile.isActive
-            }
-        })
+        const profile = {...this.state.profile};
+        profile.scheduleItems = profile.scheduleItems.slice()
+            .filter(item => item.id !== itemId);
+        this.setState({profile})
     };
 
     handleProfileActiveChange(checked) {
-        const {profile} = this.state;
+        const profile = {...this.state.profile};
         profile.isActive = checked;
 
         this.setState({
@@ -112,16 +102,26 @@ export default class App extends React.Component {
     }
 
     handleTimePickerChanged(timeStr, timePickerId) {
-        const newScheduledItems = this.state.profile.scheduleItems.slice();
+        const profile = {...this.state.profile};
+        const newScheduledItems = profile.scheduleItems.slice();
         const item = newScheduledItems.find(item => item.id === timePickerId);
         item.time = timeStr;
-        this.setState({
-            profile: {
-                scheduleItems: newScheduledItems,
-                isActive: this.state.profile.isActive
-            }
-        })
+        profile.scheduleItems = newScheduledItems;
+        this.setState({profile});
     };
+
+    handleEditProfileName(newProfileName) {
+        const profile = {...this.state.profile};
+        const newProfiles = this.state.profiles.slice();
+        const currentProfile = newProfiles.find(item => item.id === this.state.profile.id);
+        currentProfile.name = newProfileName;
+        profile.name = newProfileName;
+
+        this.setState({
+            profiles: newProfiles,
+            profile: profile
+        })
+    }
 
     getTimerDistance() {
         const now = new Date();

@@ -23,7 +23,7 @@ export default class BellHolder extends React.Component {
         const {bellDetails} = this.props;
         return (
             <div className="container mt-3">
-                <button className="del-btn" onClick={this.handleRemoveItem}>
+                <button type="button" className="del-btn" onClick={this.handleRemoveItem}>
                     <h3><i className="far fa-times-circle"/></h3>
                 </button>
                 <TimePicker timePickerId={bellDetails.id} time={bellDetails.time}

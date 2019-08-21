@@ -26,3 +26,19 @@ button:focus {
 .add-profile:hover {
     color: #1762ff
 }
+
+.passive-link {
+    border: 1px solid transparent;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+}
+
+.edit-btn {
+    border:none;
+    background-color: #f8f9fa;
+    padding: 0;
+}
+
+.edit-btn:hover {
+    color: #2693e6;
+}
