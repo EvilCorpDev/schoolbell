@@ -68,11 +68,9 @@ export default class TimePicker extends React.Component {
                             </button>
                         </div>
                         <div>
-                            <div className={popupDisplayClass + " time-popup rounded shadow col-6 p-3"}>
+                            <div className={popupDisplayClass + " time-popup rounded shadow col-6 p-3 popup"}>
                                 {this.getTimeBlockPopup(time)}
                             </div>
-                            <div className={popupDisplayClass + " popup-background"}
-                                 onClick={this.handleCloseTimePopup}/>
                         </div>
                     </div>
                 </div>
@@ -83,7 +81,7 @@ export default class TimePicker extends React.Component {
     getTimeBlockPopup(time) {
         if (this.state.selectPopup.timeBlocks.length === 0) {
             return (
-                <div className="row d-flex justify-content-center">
+                <div className="row d-flex justify-content-center popup">
                     <TimeBlock incFun={this.incHours} decFun={this.decHours} timeDesc="hours"
                                timeValue={time.get('hours')} handleShowSelectTime={this.handleShowSelectHours}/>
                     <TimeBlock incFun={this.incMins} decFun={this.decMins} timeDesc="mins"
@@ -154,17 +152,11 @@ export default class TimePicker extends React.Component {
 
     handleClockBtn = ev => {
         ev.preventDefault();
+        this.addBodyEventListener();
         const timeStr = TimePicker.getMomentTime(this.state.timeStr).format(TimePicker.timeFormat);
         this.handleTimeChanged(timeStr);
         this.setState({
             showPopup: !this.state.showPopup,
-        });
-    };
-
-    handleCloseTimePopup = ev => {
-        ev.preventDefault();
-        this.setState({
-            showPopup: false
         });
     };
 
@@ -220,6 +212,27 @@ export default class TimePicker extends React.Component {
         this.setState({timeStr});
         this.handleTimePickerChanged(timeStr, this.props.timePickerId);
     }
+
+    addBodyEventListener() {
+        document.body.addEventListener('click', this.handleBodyClick);
+    }
+
+    handleCloseTimePopup = ev => {
+        ev.preventDefault();
+        document.body.removeEventListener('click', this.handleBodyClick);
+        this.setState({
+            showPopup: false,
+            selectPopup: {
+                timeBlocks: []
+            }
+        });
+    };
+
+    handleBodyClick = ev => {
+        if (!ev.target.classList.contains('popup')) {
+            this.handleCloseTimePopup(ev);
+        }
+    };
 
     static checkAllowedInputLength(timeStr) {
         return timeStr.length + 1 > 5;

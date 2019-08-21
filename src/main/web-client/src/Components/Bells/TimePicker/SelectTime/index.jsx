@@ -8,7 +8,7 @@ export default class SelectTime extends React.Component {
         const {selectPopup, handleSelectTime} = this.props;
         const itemsToDisplay = selectPopup.timeBlocks.map((item, idx) => {
             return (
-                <button className="btn col-3 text-center timeBlock" key={idx}
+                <button className="btn col-3 text-center timeBlock popup" key={idx}
                         id={selectPopup.timeUnits + withLeadingZero(item)} onClick={handleSelectTime}>
                     {withLeadingZero(item)}
                 </button>
@@ -16,7 +16,7 @@ export default class SelectTime extends React.Component {
         });
 
         return (
-            <div className="row" id={selectPopup.timeUnits}>
+            <div className="row popup" id={selectPopup.timeUnits}>
                 {itemsToDisplay}
             </div>
         );

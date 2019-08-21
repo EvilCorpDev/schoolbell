@@ -9,17 +9,6 @@ html, body {
     height: 100%;
 }
 
-.popup-background {
-    height: 100vh;
-    width: 150vw;
-    background-color: transparent;
-    z-index: 1999;
-    position: absolute;
-    top: 0;
-    margin-left: calc(-50vw + 50%);
-    margin-top: calc(-50vh);
-}
-
 .arr-btn:hover {
     background-color: #5a6268;
     color: white;
