@@ -6,18 +6,25 @@ import EditPopup from './EditPopup'
 export default class TabRightColumn extends React.Component {
 
     render() {
-        const {handleProfileActiveChange, profile, setRestartTimer,
-            getRestartTimer, getTimerDistance, handleEditProfileName} = this.props;
+        const {
+            handleProfileActiveChange, profile, setRestartTimer,
+            getRestartTimer, getTimerDistance, handleEditProfileName
+        } = this.props;
+        const editPopup = this.props.profile.name === undefined ? '' : (
+            <EditPopup popupHeader={"Edit profile name"} editLabel="Name" popupId="editProfileNamePopup"
+                       profileName={profile.name} handleEditProfileName={handleEditProfileName}/>
+        );
+
         return (
             <div className="container w-25 mt-2 ml-0 p-0 mr-5">
                 <h2>
                     {profile.name}
-                    <button type="button" className="edit-btn ml-3" data-toggle="modal" data-target="#editProfileNamePopup">
+                    <button type="button" className="edit-btn ml-3" data-toggle="modal"
+                            data-target="#editProfileNamePopup">
                         <small><i className="far fa-edit fa-1x"/></small>
                     </button>
                 </h2>
-                <EditPopup popupHeader={"Edit profile name"} editLabel="Name" popupId="editProfileNamePopup"
-                           profileName={profile.name} handleEditProfileName={handleEditProfileName}/>
+                {editPopup}
                 <div className="container row">
                     <div className="mr-2 mt-1">Profile is active</div>
                     <Switch onChange={handleProfileActiveChange} checked={profile.isActive}

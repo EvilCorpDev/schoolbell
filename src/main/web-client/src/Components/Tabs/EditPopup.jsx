@@ -12,18 +12,7 @@ export default class EditPopup extends React.Component {
         this.handleClosePopup = this.handleClosePopup.bind(this);
     }
 
-    /*static getDerivedStateFromProps(nextProps, prevState) {
-        if (prevState.profileName === undefined) {
-            return {
-                profileName: nextProps.profileName
-            }
-        }
-        return prevState;
-
-    }*/
-
     render() {
-        console.log(this.props.profileName);
         const {popupHeader, editLabel, popupId} = this.props;
         return (
             <div className="modal fade" id={popupId} tabIndex="-1" role="dialog"

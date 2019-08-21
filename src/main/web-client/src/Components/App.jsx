@@ -34,7 +34,7 @@ export default class App extends React.Component {
             profile: {
                 id: 'defaultid',
                 name: 'Default',
-                scheduleItems: [{id: 'someid', time: '', startSec: '1', duration: ''}],
+                scheduleItems: [{id: 'someid', time: '', startSec: '', duration: ''}],
                 isActive: true
             },
             timerIsOn: true
