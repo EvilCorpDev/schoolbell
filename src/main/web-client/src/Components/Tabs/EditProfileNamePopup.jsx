@@ -1,11 +1,12 @@
 import React from 'react'
 
-export default class EditPopup extends React.Component {
+export default class EditProfileNamePopup extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            profileName: props.profileName
+            profileName: props.profileName,
+            openProfileId: props.openProfileId
         };
 
         this.handleEditProfileName = this.props.handleEditProfileName;
@@ -13,7 +14,8 @@ export default class EditPopup extends React.Component {
     }
 
     render() {
-        const {popupHeader, editLabel, popupId} = this.props;
+        const {popupHeader, editLabel, popupId, openProfileId, profileName} = this.props;
+        const inputText = openProfileId !== this.state.openProfileId ? profileName : this.state.profileName;
         return (
             <div className="modal fade" id={popupId} tabIndex="-1" role="dialog"
                  aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -30,7 +32,7 @@ export default class EditPopup extends React.Component {
                                 <div className="form-group">
                                     <label htmlFor="recipient-name" className="col-form-label">{editLabel}:</label>
                                     <input type="text" className="form-control" id="recipient-name"
-                                           value={this.state.profileName} onChange={this.handleEditName} autoComplete="off"/>
+                                           value={inputText} onChange={this.handleEditName} autoComplete="off"/>
                                 </div>
                             </div>
                         </div>
@@ -47,11 +49,14 @@ export default class EditPopup extends React.Component {
     handleEditName = ev => {
         ev.preventDefault();
         this.setState({
-            profileName: ev.target.value
+            profileName: ev.target.value,
+            openProfileId: this.props.openProfileId
         });
     };
 
     handleClosePopup = ev => {
-        this.handleEditProfileName(this.state.profileName);
+        this.setState({
+            openProfileId: this.props.openProfileId
+        }, () => this.handleEditProfileName(this.state.profileName));
     };
 }

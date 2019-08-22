@@ -1,7 +1,7 @@
 import React from 'react'
 import Switch from 'react-switch'
 import Timer from "../Timer";
-import EditPopup from './EditPopup'
+import EditProfileNamePopup from './EditProfileNamePopup'
 
 export default class TabRightColumn extends React.Component {
 
@@ -11,8 +11,9 @@ export default class TabRightColumn extends React.Component {
             getRestartTimer, getTimerDistance, handleEditProfileName
         } = this.props;
         const editPopup = this.props.profile.name === undefined ? '' : (
-            <EditPopup popupHeader={"Edit profile name"} editLabel="Name" popupId="editProfileNamePopup"
-                       profileName={profile.name} handleEditProfileName={handleEditProfileName}/>
+            <EditProfileNamePopup popupHeader={"Edit profile name"} editLabel="Name" popupId="editProfileNamePopup"
+                                  profileName={profile.name} handleEditProfileName={handleEditProfileName}
+                                  openProfileId={profile.id}/>
         );
 
         return (
