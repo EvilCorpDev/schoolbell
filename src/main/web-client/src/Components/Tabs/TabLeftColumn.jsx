@@ -9,9 +9,10 @@ export default class TabLeftColumn extends React.Component {
     };
 
     render() {
+        const showDelBtn = this.props.scheduleItems.length > 1;
         const bells = this.props.scheduleItems.map(item => {
             return <BellHolder bellDetails={item} key={item.id} removeScheduleItem = {this.props.removeScheduleItem}
-                               handleTimePickerChanged={this.props.handleTimePickerChanged}/>
+                               handleTimePickerChanged={this.props.handleTimePickerChanged} showDelBtn={showDelBtn}/>
         });
         return (
             <div className="tab container col-6 ml-5">

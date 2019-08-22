@@ -4,18 +4,23 @@ import './style.css'
 
 export default class TabHeader extends React.Component {
     static propTypes = {
+        openProfileId: PropTypes.string.isRequired,
         profiles: PropTypes.arrayOf(PropTypes.shape({
+            id: PropTypes.string.isRequired,
             name: PropTypes.string.isRequired,
-            active: PropTypes.bool
+            isActive: PropTypes.bool
         }))
     };
 
     render() {
+        const {openProfileId, handleChangeOpenedProfile} = this.props;
         const headers = this.props.profiles.map(profile => {
-            const classList = profile.active ? "nav-link active" : "nav-link passive-link";
+            const classList = profile.id === openProfileId ? "nav-link active" : "nav-link passive-link";
             return (
-                <li className="nav-item" key={profile.name}>
-                    <button className={classList}>{profile.name}</button>
+                <li className="nav-item" key={profile.id}>
+                    <button className={classList} id={profile.id} onClick={handleChangeOpenedProfile}>
+                        {profile.name}
+                    </button>
                 </li>
             )
         });

@@ -10,7 +10,8 @@ export default class App extends React.Component {
         super(props);
         this.state = {
             profiles: [],
-            profile: {
+            openProfile: {
+                id: '',
                 scheduleItems: [],
                 isActive: true
             },
@@ -25,16 +26,28 @@ export default class App extends React.Component {
         this.getTimerDistance = this.getTimerDistance.bind(this);
         this.removeScheduleItem = this.removeScheduleItem.bind(this);
         this.handleEditProfileName = this.handleEditProfileName.bind(this);
+        this.handleChangeOpenedProfile = this.handleChangeOpenedProfile.bind(this);
     }
 
     componentDidMount() {
-        //const timerIsOn = profile.scheduleItems.size !== 0;
         this.setState({
-            profiles: [{id: 'defaultid', name: 'Default', active: true}, {id: 'excid', name: 'Exc 1', active: false}],
-            profile: {
+            profiles: [
+                {
+                    id: 'defaultid',
+                    name: 'Default',
+                    isActive: true,
+                    scheduleItems: [{id: 'someid', time: '08:30', startSec: '0', duration: '60'}]
+                },
+                {
+                    id: 'excid',
+                    name: 'Exc 1',
+                    isActive: false,
+                    scheduleItems: [{id: 'anotherid', time: '9:30', startSec: '10', duration: '30'}]
+                }],
+            openProfile: {
                 id: 'defaultid',
                 name: 'Default',
-                scheduleItems: [{id: 'someid', time: '', startSec: '', duration: ''}],
+                scheduleItems: [{id: 'someid', time: '08:30', startSec: '0', duration: '60'}],
                 isActive: true
             },
             timerIsOn: true
@@ -42,20 +55,21 @@ export default class App extends React.Component {
     }
 
     render() {
-        const {profiles, profile} = this.state;
-        this.setRestartTimer(profile.scheduleItems.size !== 0);
+        const {profiles, openProfile} = this.state;
+        this.setRestartTimer(openProfile.scheduleItems.size !== 0);
 
         return (
             <div className="shadow main-container">
-                <TabHeader profiles={profiles}/>
+                <TabHeader profiles={profiles} openProfileId={this.state.openProfile.id}
+                           handleChangeOpenedProfile={this.handleChangeOpenedProfile}/>
                 <div className="border p-3">
                     <div className="row">
-                        <TabLeftColumn scheduleItems={profile.scheduleItems}
+                        <TabLeftColumn scheduleItems={openProfile.scheduleItems}
                                        removeScheduleItem={this.removeScheduleItem}
                                        handleTimePickerChanged={this.handleTimePickerChanged}/>
                         <TabRightColumn handleProfileActiveChange={this.handleProfileActiveChange}
                                         setRestartTimer={this.setRestartTimer} getRestartTimer={this.getRestartTimer}
-                                        getTimerDistance={this.getTimerDistance} profile={profile}
+                                        getTimerDistance={this.getTimerDistance} profile={openProfile}
                                         handleEditProfileName={this.handleEditProfileName}/>
                     </div>
 
@@ -76,56 +90,83 @@ export default class App extends React.Component {
 
     addNewScheduleItem = ev => {
         ev.preventDefault();
-        const profile = {...this.state.profile};
+        const profile = {...this.state.openProfile};
         const items = profile.scheduleItems.slice();
         items.push({time: '', startSec: '', duration: '', id: uuidv4()});
         profile.scheduleItems = items;
         this.setState({
-            profile: profile
+            openProfile: profile
         })
     };
 
     removeScheduleItem(itemId) {
-        const profile = {...this.state.profile};
+        const profile = {...this.state.openProfile};
         profile.scheduleItems = profile.scheduleItems.slice()
             .filter(item => item.id !== itemId);
-        this.setState({profile})
+        this.setState({
+            openProfile: profile
+        })
     };
 
     handleProfileActiveChange(checked) {
-        const profile = {...this.state.profile};
-        profile.isActive = checked;
+        const newProfile = {...this.state.openProfile};
+        newProfile.isActive = checked;
+        const newProfiles = this.state.profiles.slice();
+        if (checked) {
+            newProfiles.forEach(profile => {
+                if (profile.isActive && profile.id !== newProfile.id) {
+                    profile.isActive = false;
+                }
+            });
+        }
 
         this.setState({
-            profile: profile
+            openProfile: newProfile,
+            profiles: newProfiles
         })
     }
 
     handleTimePickerChanged(timeStr, timePickerId) {
-        const profile = {...this.state.profile};
+        const profile = {...this.state.openProfile};
         const newScheduledItems = profile.scheduleItems.slice();
         const item = newScheduledItems.find(item => item.id === timePickerId);
         item.time = timeStr;
         profile.scheduleItems = newScheduledItems;
-        this.setState({profile});
+        this.setState({
+            openProfile: profile
+        })
     };
 
     handleEditProfileName(newProfileName) {
-        const profile = {...this.state.profile};
+        const profile = {...this.state.openProfile};
         const newProfiles = this.state.profiles.slice();
-        const currentProfile = newProfiles.find(item => item.id === this.state.profile.id);
+        const currentProfile = newProfiles.find(item => item.id === profile.id);
         currentProfile.name = newProfileName;
         profile.name = newProfileName;
 
         this.setState({
             profiles: newProfiles,
-            profile: profile
+            openProfile: profile
         })
     }
 
+    handleChangeOpenedProfile = ev => {
+        ev.preventDefault();
+        const {openProfile, profiles} = this.state;
+        let newProfiles = profiles.slice();
+        const openProfileIndex = newProfiles.findIndex(profile => profile.id === openProfile.id);
+        newProfiles[openProfileIndex] = openProfile;
+        const newOpenProfile = newProfiles.find(profile => profile.id === ev.target.id);
+
+        this.setState({
+            openProfile: newOpenProfile,
+            profiles: newProfiles
+        })
+    };
+
     getTimerDistance() {
         const now = new Date();
-        const scheduleItems = this.state.profile.scheduleItems.filter(item => item.time !== '');
+        const scheduleItems = this.state.openProfile.scheduleItems.filter(item => item.time !== '');
         const timesLeft = scheduleItems.map(item => {
             let left = moment(item.time, "HH:mm") - 0; //dirty hack to convert moment object to number
             if (left - now < 0) {

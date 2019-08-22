@@ -60,8 +60,8 @@ export default class TimePicker extends React.Component {
                         <div className="row pl-3 pr-3">
                             <input className={inputErrorClass + "col-10 form-control text-center"} type="text"
                                    id={timePickerId} value={timeStr} onChange={this.handleInputChanged}
-                                   autoComplete="off" onKeyPress={this.handleKeyPress} onBlur={this.handleInputOnBlur}
-                                   placeholder="Select time"/>
+                                   autoComplete="off" onKeyDown={this.handleKeyDown} onBlur={this.handleInputOnBlur}
+                                   onKeyPress={this.handleKeyPressed} placeholder="Select time"/>
                             <button type="button" className="btn btn-outline-secondary col-2"
                                     onClick={this.handleClockBtn}>
                                 <i className="far fa-clock"/>
@@ -105,12 +105,38 @@ export default class TimePicker extends React.Component {
         });
     };
 
-    handleKeyPress = ev => {
+    handleKeyDown = ev => {
+        if (ev.key === 'ArrowUp') {
+            this.handleArrowUp(ev);
+        } else if (ev.key === 'ArrowDown') {
+            this.handleArrowDown(ev);
+        }
+    };
+
+    handleKeyPressed = ev => {
         if (TimePicker.checkAllowedInputLength(this.state.timeStr) || !TimePicker.allowedSymbols.test(ev.key)) {
             ev.preventDefault();
             ev.stopPropagation();
         }
     };
+
+    handleArrowDown(ev) {
+        ev.stopPropagation();
+        if (ev.target.selectionStart <= 2) {
+            this.decHours(ev);
+        } else {
+            this.decMins(ev);
+        }
+    }
+
+    handleArrowUp(ev) {
+        ev.stopPropagation();
+        if (ev.target.selectionStart <= 2) {
+            this.incHours(ev);
+        } else {
+            this.incMins(ev);
+        }
+    }
 
     handleInputOnBlur = ev => {
         if (this.state.timeStr !== '') {
