@@ -32,28 +32,19 @@ export default class App extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({
-            profiles: [
-                {
-                    id: 'defaultid',
-                    name: 'Default',
-                    isActive: true,
-                    scheduleItems: [{id: 'someid', time: '08:30', startSec: '0', duration: '60'}]
-                },
-                {
-                    id: 'excid',
-                    name: 'Exc 1',
-                    isActive: false,
-                    scheduleItems: [{id: 'anotherid', time: '9:30', startSec: '10', duration: '30'}]
-                }],
-            openProfile: {
-                id: 'defaultid',
-                name: 'Default',
-                scheduleItems: [{id: 'someid', time: '08:30', startSec: '0', duration: '60'}],
-                isActive: true
-            },
-            timerIsOn: true
-        })
+        fetch("/bell/schedule/profile")
+            .then(res => res.json())
+            .then((profiles) => {
+                    const newProfiles = profiles.length > 0 ? profiles: [this.getNewEmptyProfile()];
+                    let openProfile = profiles.find(profile => profile.isActive);
+                    openProfile = openProfile ? openProfile : newProfiles[0];
+                    this.setState({
+                        profiles: newProfiles,
+                        openProfile: openProfile,
+                        timerIsOn: profiles.length > 0
+                    })
+                }
+            );
     }
 
     render() {

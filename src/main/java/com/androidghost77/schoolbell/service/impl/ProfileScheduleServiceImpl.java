@@ -27,7 +27,7 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
 
     @Override
     public List<ScheduleItemDto> getScheduleItems(String profileName) {
-        return scheduleRepo.findAllByProfileProfileName(profileName)
+        return scheduleRepo.findAllByProfileName(profileName)
                 .stream()
                 .map(scheduleMapper::scheduleToDto)
                 .collect(Collectors.toList());

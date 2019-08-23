@@ -21,8 +21,8 @@ public class Profile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
-    @Column(name = "profile_name")
-    private String profileName;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "is_active")
     private Boolean isActive;

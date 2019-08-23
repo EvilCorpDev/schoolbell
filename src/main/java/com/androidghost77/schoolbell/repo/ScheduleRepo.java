@@ -8,7 +8,7 @@ import com.androidghost77.schoolbell.model.Schedule;
 
 public interface ScheduleRepo extends JpaRepository<Schedule, String> {
 
-    List<Schedule> findAllByProfileProfileName(String profileName);
+    List<Schedule> findAllByProfileName(String profileName);
 
     List<Schedule> findAllByProfileIsActive(boolean isActive);
 }

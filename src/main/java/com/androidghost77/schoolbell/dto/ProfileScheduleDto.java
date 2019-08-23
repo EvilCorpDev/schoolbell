@@ -11,8 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProfileScheduleDto {
 
-    private String profileName;
-    private Boolean isActive;
+    private String id;
+    private String name;
+    private Boolean isActive = false;
     private List<ScheduleItemDto> scheduleItems;
 
 }

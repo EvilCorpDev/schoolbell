@@ -26,6 +26,9 @@ public class Schedule {
     @Column(name = "duration")
     private long duration;
 
+    @Column(name = "start_sec")
+    private long startSec;
+
     @Column(name = "audio_path")
     private String audioPath;
 

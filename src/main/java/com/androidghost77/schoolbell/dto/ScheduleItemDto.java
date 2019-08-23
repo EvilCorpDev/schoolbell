@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ScheduleItemDto {
 
+    private String id;
     private String time;
     private long duration;
+    private long startSec;
     private String audioPath;
 
 }
