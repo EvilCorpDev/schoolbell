@@ -55,8 +55,11 @@ export default class EditProfileNamePopup extends React.Component {
     };
 
     handleClosePopup = ev => {
+        const {openProfileId, profileName} = this.props;
+        const editProfileName = openProfileId !== this.state.openProfileId ? profileName : this.state.profileName;
         this.setState({
-            openProfileId: this.props.openProfileId
-        }, () => this.handleEditProfileName(this.state.profileName));
+            openProfileId: this.props.openProfileId,
+            profileName: editProfileName
+        }, () => this.handleEditProfileName(editProfileName));
     };
 }

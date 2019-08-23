@@ -1,19 +1,25 @@
 import React from 'react'
 import Switch from 'react-switch'
 import Timer from "../Timer";
-import EditProfileNamePopup from './EditProfileNamePopup'
+import EditProfileNamePopup from '../popups/EditProfileNamePopup'
+import DeletePopup from '../popups/DeletePopup'
 
 export default class TabRightColumn extends React.Component {
 
     render() {
         const {
             handleProfileActiveChange, profile, setRestartTimer,
-            getRestartTimer, getTimerDistance, handleEditProfileName
+            getRestartTimer, getTimerDistance, handleEditProfileName, handleDeleteProfile
         } = this.props;
         const editPopup = this.props.profile.name === undefined ? '' : (
             <EditProfileNamePopup popupHeader={"Edit profile name"} editLabel="Name" popupId="editProfileNamePopup"
                                   profileName={profile.name} handleEditProfileName={handleEditProfileName}
                                   openProfileId={profile.id}/>
+        );
+        const delProfilePopup = this.props.profile.name === undefined ? '' : (
+            <DeletePopup delEntityName={"profile " + this.props.profile.name} popupId="delProfilePopup"
+                         handleDeleteAction={handleDeleteProfile}
+                         delEntityId={profile.id}/>
         );
 
         return (
@@ -24,8 +30,13 @@ export default class TabRightColumn extends React.Component {
                             data-target="#editProfileNamePopup">
                         <small><i className="far fa-edit fa-1x"/></small>
                     </button>
+                    <button className="btn float-auto del-profile" data-toggle="modal"
+                            data-target="#delProfilePopup">
+                        <small><i className="fas fa-times fa-2x"/></small>
+                    </button>
                 </h2>
                 {editPopup}
+                {delProfilePopup}
                 <div className="container row">
                     <div className="mr-2 mt-1">Profile is active</div>
                     <Switch onChange={handleProfileActiveChange} checked={profile.isActive}

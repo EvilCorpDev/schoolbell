@@ -27,6 +27,8 @@ export default class App extends React.Component {
         this.removeScheduleItem = this.removeScheduleItem.bind(this);
         this.handleEditProfileName = this.handleEditProfileName.bind(this);
         this.handleChangeOpenedProfile = this.handleChangeOpenedProfile.bind(this);
+        this.handleAddProfile = this.handleAddProfile.bind(this);
+        this.handleDeleteProfile = this.handleDeleteProfile.bind(this);
     }
 
     componentDidMount() {
@@ -61,7 +63,8 @@ export default class App extends React.Component {
         return (
             <div className="shadow main-container">
                 <TabHeader profiles={profiles} openProfileId={this.state.openProfile.id}
-                           handleChangeOpenedProfile={this.handleChangeOpenedProfile}/>
+                           handleChangeOpenedProfile={this.handleChangeOpenedProfile}
+                           handleAddProfile={this.handleAddProfile}/>
                 <div className="border p-3">
                     <div className="row">
                         <TabLeftColumn scheduleItems={openProfile.scheduleItems}
@@ -70,7 +73,8 @@ export default class App extends React.Component {
                         <TabRightColumn handleProfileActiveChange={this.handleProfileActiveChange}
                                         setRestartTimer={this.setRestartTimer} getRestartTimer={this.getRestartTimer}
                                         getTimerDistance={this.getTimerDistance} profile={openProfile}
-                                        handleEditProfileName={this.handleEditProfileName}/>
+                                        handleEditProfileName={this.handleEditProfileName}
+                                        handleDeleteProfile={this.handleDeleteProfile}/>
                     </div>
 
                     <div className="row mt-4">
@@ -153,10 +157,35 @@ export default class App extends React.Component {
     handleChangeOpenedProfile = ev => {
         ev.preventDefault();
         const {openProfile, profiles} = this.state;
-        let newProfiles = profiles.slice();
-        const openProfileIndex = newProfiles.findIndex(profile => profile.id === openProfile.id);
-        newProfiles[openProfileIndex] = openProfile;
+        const newProfiles = this.saveOpenProfileInProfiles(openProfile, profiles);
         const newOpenProfile = newProfiles.find(profile => profile.id === ev.target.id);
+
+        this.setState({
+            openProfile: newOpenProfile,
+            profiles: newProfiles
+        })
+    };
+
+    handleAddProfile = ev => {
+        ev.preventDefault();
+        const {openProfile, profiles} = this.state;
+        let newProfiles = this.saveOpenProfileInProfiles(openProfile, profiles);
+        const newEmptyProfile = this.getNewEmptyProfile();
+        newProfiles.push(newEmptyProfile);
+
+        this.setState({
+            openProfile: newEmptyProfile,
+            profiles: newProfiles
+        })
+    };
+
+    handleDeleteProfile = () => {
+        const {openProfile, profiles} = this.state;
+        let newProfiles = profiles.slice().filter(profile => profile.id !== openProfile.id);
+        let newOpenProfile = profiles.length > 0 ? newProfiles[0] : this.getNewEmptyProfile();
+        if (newProfiles.length === 0) {
+            newProfiles.push(newOpenProfile);
+        }
 
         this.setState({
             openProfile: newOpenProfile,
@@ -183,6 +212,22 @@ export default class App extends React.Component {
 
     getRestartTimer() {
         return this.restartTimer;
+    }
+
+    getNewEmptyProfile() {
+        return {
+            id: uuidv4(),
+            name: 'New',
+            isActive: false,
+            scheduleItems: [{id: uuidv4(), time: '', startSec: '', duration: ''}]
+        };
+    }
+
+    saveOpenProfileInProfiles(openProfile, profiles) {
+        let newProfiles = profiles.slice();
+        const openProfileIndex = newProfiles.findIndex(profile => profile.id === openProfile.id);
+        newProfiles[openProfileIndex] = openProfile;
+        return newProfiles;
     }
 
 }

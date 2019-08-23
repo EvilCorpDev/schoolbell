@@ -27,8 +27,16 @@ button:focus {
     color: #1762ff
 }
 
+.active-tab {
+    border-color: #e9ecef #e9ecef #dee2e6;
+}
+
+.active-btn {
+    border-width: medium!important;
+}
+
 .passive-link {
-    border: 1px solid transparent;
+    border: 2px solid transparent;
     border-top-left-radius: .25rem;
     border-top-right-radius: .25rem;
 }
@@ -41,4 +49,8 @@ button:focus {
 
 .edit-btn:hover {
     color: #2693e6;
+}
+
+.del-profile:hover {
+    color: #a71d2a;
 }
