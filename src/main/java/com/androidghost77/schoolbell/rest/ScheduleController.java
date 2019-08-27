@@ -37,7 +37,7 @@ public class ScheduleController {
 
     @PostMapping("/profile")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createProfileSchedule(@RequestBody ProfileScheduleDto newProfileSchedule) {
+    public void saveProfileSchedule(@RequestBody List<ProfileScheduleDto> newProfileSchedule) {
         profileScheduleService.saveNewProfileSchedule(newProfileSchedule);
     }
 

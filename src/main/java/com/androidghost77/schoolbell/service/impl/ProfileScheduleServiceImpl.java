@@ -1,10 +1,20 @@
 package com.androidghost77.schoolbell.service.impl;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import org.springframework.util.StringUtils;
 
 import com.androidghost77.schoolbell.dto.ProfileScheduleDto;
 import com.androidghost77.schoolbell.dto.ScheduleItemDto;
+import com.androidghost77.schoolbell.exceptions.SaveException;
 import com.androidghost77.schoolbell.mapper.ProfileMapper;
 import com.androidghost77.schoolbell.mapper.ScheduleMapper;
 import com.androidghost77.schoolbell.model.Profile;
@@ -13,9 +23,12 @@ import com.androidghost77.schoolbell.repo.ProfileRepo;
 import com.androidghost77.schoolbell.repo.ScheduleRepo;
 import com.androidghost77.schoolbell.schedule.Scheduler;
 import com.androidghost77.schoolbell.service.ProfileScheduleService;
+import com.androidghost77.schoolbell.service.func.ThrowingFunction;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 public class ProfileScheduleServiceImpl implements ProfileScheduleService {
 
@@ -24,6 +37,9 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
     private final ScheduleMapper scheduleMapper;
     private final ProfileMapper profileMapper;
     private final Scheduler<Schedule> bellScheduler;
+    private final Base64.Decoder base64Decoder = Base64.getMimeDecoder();
+
+    private static final String AUDIO_PATH = "./audio";
 
     @Override
     public List<ScheduleItemDto> getScheduleItems(String profileName) {
@@ -34,14 +50,15 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
     }
 
     @Override
-    public void saveNewProfileSchedule(ProfileScheduleDto profileDto) {
-        Profile newProfile = profileMapper.dtoToProfileSchedule(profileDto);
-        if(profileRepo.countAllByIsActive(true) == 0) {
-            newProfile.setIsActive(true);
-        }
-        Profile savedProfile = profileRepo.save(newProfile);
+    public void saveNewProfileSchedule(List<ProfileScheduleDto> profilesDto) {
+        List<Profile> profilesToSave = profilesDto.stream()
+                .map(profileMapper::dtoToProfileSchedule)
+                .collect(Collectors.toList());
+        List<Profile> savedProfiles = profileRepo.saveAll(profilesToSave);
 
-        saveScheduleItems(profileDto.getScheduleItems(), savedProfile);
+        IntStream.range(0, profilesDto.size())
+                .forEach(index -> saveScheduleItems(
+                        profilesDto.get(index).getScheduleItems(), savedProfiles.get(index)));
     }
 
     @Override
@@ -68,9 +85,48 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
 
     private void saveScheduleItems(List<ScheduleItemDto> scheduleItemDtos, Profile savedProfile) {
         List<Schedule> scheduleList = scheduleItemDtos.stream()
+                .peek(this::saveAudioFile)
                 .map(scheduleMapper::dtoToSchedule)
                 .peek(item -> item.setProfile(savedProfile))
                 .collect(Collectors.toList());
         scheduleRepo.saveAll(scheduleList);
+    }
+
+    private void saveAudioFile(ScheduleItemDto scheduleItemDto) {
+        if (StringUtils.isEmpty(scheduleItemDto.getAudioFile())) {
+            return;
+        }
+
+        byte[] decodedBytes = base64Decoder.decode(scheduleItemDto.getAudioFile());
+        String fileName = UUID.randomUUID().toString();
+        Path filePath = Paths.get(getFilePath(fileName, scheduleItemDto.getFileExtension()));
+        try {
+            Files.createDirectories(filePath.getParent());
+            Files.write(filePath, decodedBytes);
+        } catch (IOException exc) {
+            log.error("Can't save file into: {}", filePath, exc);
+            throw new SaveException(exc);
+        }
+        scheduleItemDto.setAudioPath(String.format("%s.%s", fileName, scheduleItemDto.getFileExtension()));
+        deletePreviousAudio(scheduleItemDto.getId());
+    }
+
+    private void deletePreviousAudio(String itemId) {
+        scheduleRepo.findById(itemId)
+                .map(schedule -> String.format("%s/%s", AUDIO_PATH, schedule.getAudioPath()))
+                .map(Paths::get)
+                .ifPresent(path -> applyFuncWrappingExc(Files::deleteIfExists, path));
+    }
+
+    private <T, R> R applyFuncWrappingExc(ThrowingFunction<T, R> function, T params) {
+        try {
+            return function.apply(params);
+        } catch (Exception exc) {
+            throw new RuntimeException(exc);
+        }
+    }
+
+    private String getFilePath(String fileName, String fileExtension) {
+        return String.format("%s/%s.%s", AUDIO_PATH, fileName, fileExtension);
     }
 }

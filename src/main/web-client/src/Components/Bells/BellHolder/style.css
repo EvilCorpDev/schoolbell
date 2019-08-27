@@ -12,3 +12,11 @@
 .del-btn:hover {
     color: #a71d2a;
 }
+
+.bell-number {
+    position: absolute;
+    z-index: 1000;
+    left: 0;
+    margin-top: 2rem;
+    color: #6c757d;
+}

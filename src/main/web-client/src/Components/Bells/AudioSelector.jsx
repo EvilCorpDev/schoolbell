@@ -14,6 +14,7 @@ export default class AudioSelector extends React.Component {
     }
 
     render() {
+        const {bellId, handleSelectAudioFile} = this.props;
         return (
             <div className="row">
                 <div className="col-7">
@@ -30,7 +31,7 @@ export default class AudioSelector extends React.Component {
                         </div>
                     </div>
                 </div>
-                {AudioSelector.createSelectAudioBtn()}
+                {AudioSelector.createSelectAudioBtn(handleSelectAudioFile, bellId)}
             </div>
         )
     }
@@ -47,16 +48,16 @@ export default class AudioSelector extends React.Component {
         })
     };
 
-    static createSelectAudioBtn() {
+    static createSelectAudioBtn(handleSelectAudioFile, bellId) {
         return (
             <div className="col-5">
                 <div className="form-group">
-                    <label htmlFor="exampleFormControlFile6"
+                    <label htmlFor={"audioSelector" + bellId}
                            className="btn btn-outline-secondary w-100">
                         Select audio file
                     </label>
-                    <input type="file" className="form-control-file d-none"
-                           id="exampleFormControlFile6"/>
+                    <input type="file" className="form-control-file d-none" accept=".mp3,.m4a,.wav,.ogg,.aac,.wma"
+                           id={"audioSelector" + bellId} onChange={handleSelectAudioFile}/>
                 </div>
             </div>
         )

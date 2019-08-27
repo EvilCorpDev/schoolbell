@@ -6,6 +6,9 @@ import TabLeftColumn from './Tabs/TabLeftColumn'
 import TabRightColumn from './Tabs/TabRightColumn'
 
 export default class App extends React.Component {
+
+    static BASE_64_PREFIX = 'base64,';
+
     constructor(props) {
         super(props);
         this.state = {
@@ -29,13 +32,15 @@ export default class App extends React.Component {
         this.handleChangeOpenedProfile = this.handleChangeOpenedProfile.bind(this);
         this.handleAddProfile = this.handleAddProfile.bind(this);
         this.handleDeleteProfile = this.handleDeleteProfile.bind(this);
+        this.handleSaveAllProfiles = this.handleSaveAllProfiles.bind(this);
+        this.handleSelectAudioFile = this.handleSelectAudioFile.bind(this)
     }
 
     componentDidMount() {
         fetch("/bell/schedule/profile")
             .then(res => res.json())
             .then((profiles) => {
-                    const newProfiles = profiles.length > 0 ? profiles: [this.getNewEmptyProfile()];
+                    const newProfiles = profiles.length > 0 ? profiles : [this.getNewEmptyProfile()];
                     let openProfile = profiles.find(profile => profile.isActive);
                     openProfile = openProfile ? openProfile : newProfiles[0];
                     this.setState({
@@ -60,7 +65,8 @@ export default class App extends React.Component {
                     <div className="row">
                         <TabLeftColumn scheduleItems={openProfile.scheduleItems}
                                        removeScheduleItem={this.removeScheduleItem}
-                                       handleTimePickerChanged={this.handleTimePickerChanged}/>
+                                       handleTimePickerChanged={this.handleTimePickerChanged}
+                                       handleSelectAudioFile={this.handleSelectAudioFile}/>
                         <TabRightColumn handleProfileActiveChange={this.handleProfileActiveChange}
                                         setRestartTimer={this.setRestartTimer} getRestartTimer={this.getRestartTimer}
                                         getTimerDistance={this.getTimerDistance} profile={openProfile}
@@ -70,7 +76,7 @@ export default class App extends React.Component {
 
                     <div className="row mt-4">
                         <div className="col-10 ml-auto mr-5 mb-2">
-                            <button className='btn btn-info float-right'>
+                            <button className='btn btn-info float-right' onClick={this.handleSaveAllProfiles}>
                                 <i className="fas fa-save"/> Save
                             </button>
                             <button className='btn btn-secondary float-right mr-4' onClick={this.addNewScheduleItem}>
@@ -124,8 +130,8 @@ export default class App extends React.Component {
     handleTimePickerChanged(timeStr, timePickerId) {
         const profile = {...this.state.openProfile};
         const newScheduledItems = profile.scheduleItems.slice();
-        const item = newScheduledItems.find(item => item.id === timePickerId);
-        item.time = timeStr;
+        const newItem = newScheduledItems.find(item => item.id === timePickerId);
+        newItem.time = timeStr;
         profile.scheduleItems = newScheduledItems;
         this.setState({
             openProfile: profile
@@ -148,7 +154,7 @@ export default class App extends React.Component {
     handleChangeOpenedProfile = ev => {
         ev.preventDefault();
         const {openProfile, profiles} = this.state;
-        const newProfiles = this.saveOpenProfileInProfiles(openProfile, profiles);
+        const newProfiles = this.getUpToDateProfiles(openProfile, profiles);
         const newOpenProfile = newProfiles.find(profile => profile.id === ev.target.id);
 
         this.setState({
@@ -160,7 +166,7 @@ export default class App extends React.Component {
     handleAddProfile = ev => {
         ev.preventDefault();
         const {openProfile, profiles} = this.state;
-        let newProfiles = this.saveOpenProfileInProfiles(openProfile, profiles);
+        let newProfiles = this.getUpToDateProfiles(openProfile, profiles);
         const newEmptyProfile = this.getNewEmptyProfile();
         newProfiles.push(newEmptyProfile);
 
@@ -183,6 +189,58 @@ export default class App extends React.Component {
             profiles: newProfiles
         })
     };
+
+    handleSaveAllProfiles = ev => {
+        ev.preventDefault();
+        const {openProfile, profiles} = this.state;
+        const newProfiles = this.getUpToDateProfiles(openProfile, profiles);
+
+        this.setState({
+            profiles: newProfiles
+        }, () => {
+            fetch('/bell/schedule/profile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newProfiles)
+            })
+                .catch(error => console.error(error))
+        });
+    };
+
+    handleSelectAudioFile = ev => {
+        const newOpenProfile = {...this.state.openProfile};
+        const newScheduleItems = newOpenProfile.scheduleItems.slice();
+
+        const itemId = ev.target.id.substr(13); //starting from 13 because of id look like audioSelector01
+        const editedItemIdx = newScheduleItems.findIndex(profile => profile.id === itemId);
+
+        const audioFile = ev.target.files[0];
+        newScheduleItems[editedItemIdx].fileExtension = this.getFileExtension(audioFile);
+        this.getBase64(audioFile, result => {
+            const mimePrefixIndex = result.indexOf(App.BASE_64_PREFIX);
+            newScheduleItems[editedItemIdx].audioFile = result.substr(mimePrefixIndex + App.BASE_64_PREFIX.length);
+            newOpenProfile.scheduleItems = newScheduleItems;
+            this.setState(newOpenProfile);
+        });
+    };
+
+    getFileExtension(audioFile) {
+        const extensionDelimiterIdx = audioFile.name.lastIndexOf('.');
+        return audioFile.name.substr(extensionDelimiterIdx + 1);
+    }
+
+    getBase64(file, callback) {
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+            callback(reader.result)
+        };
+        reader.onerror = function (error) {
+            console.log('Error reading file: ', error);
+        };
+    }
 
     getTimerDistance() {
         const now = new Date();
@@ -214,7 +272,7 @@ export default class App extends React.Component {
         };
     }
 
-    saveOpenProfileInProfiles(openProfile, profiles) {
+    getUpToDateProfiles(openProfile, profiles) {
         let newProfiles = profiles.slice();
         const openProfileIndex = newProfiles.findIndex(profile => profile.id === openProfile.id);
         newProfiles[openProfileIndex] = openProfile;

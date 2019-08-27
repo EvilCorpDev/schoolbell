@@ -14,5 +14,6 @@ public class ScheduleItemDto {
     private long duration;
     private long startSec;
     private String audioPath;
-
+    private String audioFile;
+    private String fileExtension;
 }
