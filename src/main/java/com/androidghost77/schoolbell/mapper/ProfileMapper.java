@@ -1,6 +1,5 @@
 package com.androidghost77.schoolbell.mapper;
 
-import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -11,8 +10,13 @@ import com.androidghost77.schoolbell.model.Profile;
 public interface ProfileMapper {
 
     @Mapping(source = "scheduleList", target = "scheduleItems")
-    ProfileScheduleDto profileScheduleToDto(Profile profile);
+    @Mapping(source = "isActive", target = "active")
+    ProfileScheduleDto profileScheduleToDtoWithScheduleList(Profile profile);
 
-    @InheritInverseConfiguration
+    @Mapping(source = "scheduleItems", target = "scheduleList")
+    @Mapping(source = "active", target = "isActive")
+    Profile dtoToProfileScheduleWithItems(ProfileScheduleDto scheduleDto);
+
+    @Mapping(source = "active", target = "isActive")
     Profile dtoToProfileSchedule(ProfileScheduleDto scheduleDto);
 }

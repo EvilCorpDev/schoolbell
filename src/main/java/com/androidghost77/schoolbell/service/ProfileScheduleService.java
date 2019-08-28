@@ -9,7 +9,7 @@ public interface ProfileScheduleService {
 
     List<ScheduleItemDto> getScheduleItems(String profileName);
 
-    void saveNewProfileSchedule(List<ProfileScheduleDto> newProfilesSchedule);
+    void saveProfilesSchedule(List<ProfileScheduleDto> newProfilesSchedule);
 
     List<ProfileScheduleDto> getAllProfiles();
 

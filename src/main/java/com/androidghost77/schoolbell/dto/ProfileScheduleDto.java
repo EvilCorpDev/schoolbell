@@ -13,7 +13,8 @@ public class ProfileScheduleDto {
 
     private String id;
     private String name;
-    private Boolean isActive = false;
+    private boolean active = false;
+    private boolean existing = true;
     private List<ScheduleItemDto> scheduleItems;
 
 }

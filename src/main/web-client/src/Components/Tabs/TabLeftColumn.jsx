@@ -10,13 +10,18 @@ export default class TabLeftColumn extends React.Component {
     };
 
     render() {
-        const {removeScheduleItem, handleTimePickerChanged, handleSelectAudioFile} = this.props;
+        const {
+            removeScheduleItem, handleTimePickerChanged, handleSelectAudioFile,
+            handleDurationChange, handleStartSecondChange
+        } = this.props;
         const showDelBtn = this.props.scheduleItems.length > 1;
         const bells = this.props.scheduleItems.map((item, idx) => {
-            return <BellHolder bellDetails={item} key={item.id} removeScheduleItem = {removeScheduleItem}
+            return <BellHolder bellDetails={item} key={item.id} removeScheduleItem={removeScheduleItem}
                                handleTimePickerChanged={handleTimePickerChanged}
                                showDelBtn={showDelBtn} itemNumber={idx + 1}
-                               handleSelectAudioFile={handleSelectAudioFile}/>
+                               handleSelectAudioFile={handleSelectAudioFile}
+                               handleStartSecondChange={handleStartSecondChange}
+                               handleDurationChange={handleDurationChange}/>
         });
         return (
             <div className="tab container col-6 ml-5">

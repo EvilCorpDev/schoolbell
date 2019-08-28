@@ -16,7 +16,7 @@ export default class App extends React.Component {
             openProfile: {
                 id: '',
                 scheduleItems: [],
-                isActive: true
+                active: true
             },
             timerIsOn: true
         };
@@ -33,23 +33,14 @@ export default class App extends React.Component {
         this.handleAddProfile = this.handleAddProfile.bind(this);
         this.handleDeleteProfile = this.handleDeleteProfile.bind(this);
         this.handleSaveAllProfiles = this.handleSaveAllProfiles.bind(this);
-        this.handleSelectAudioFile = this.handleSelectAudioFile.bind(this)
+        this.handleSelectAudioFile = this.handleSelectAudioFile.bind(this);
+        this.handleStartSecondChange = this.handleStartSecondChange.bind(this);
+        this.handleDurationChange = this.handleDurationChange.bind(this);
+        this.updateOpenProfileScheduledItemById = this.updateOpenProfileScheduledItemById.bind(this);
     }
 
     componentDidMount() {
-        fetch("/bell/schedule/profile")
-            .then(res => res.json())
-            .then((profiles) => {
-                    const newProfiles = profiles.length > 0 ? profiles : [this.getNewEmptyProfile()];
-                    let openProfile = profiles.find(profile => profile.isActive);
-                    openProfile = openProfile ? openProfile : newProfiles[0];
-                    this.setState({
-                        profiles: newProfiles,
-                        openProfile: openProfile,
-                        timerIsOn: profiles.length > 0
-                    })
-                }
-            );
+        this.getServerProfiles();
     }
 
     render() {
@@ -66,7 +57,9 @@ export default class App extends React.Component {
                         <TabLeftColumn scheduleItems={openProfile.scheduleItems}
                                        removeScheduleItem={this.removeScheduleItem}
                                        handleTimePickerChanged={this.handleTimePickerChanged}
-                                       handleSelectAudioFile={this.handleSelectAudioFile}/>
+                                       handleSelectAudioFile={this.handleSelectAudioFile}
+                                       handleStartSecondChange={this.handleStartSecondChange}
+                                       handleDurationChange={this.handleDurationChange}/>
                         <TabRightColumn handleProfileActiveChange={this.handleProfileActiveChange}
                                         setRestartTimer={this.setRestartTimer} getRestartTimer={this.getRestartTimer}
                                         getTimerDistance={this.getTimerDistance} profile={openProfile}
@@ -89,11 +82,29 @@ export default class App extends React.Component {
         )
     }
 
+    getServerProfiles(openProfileId) {
+        fetch("/bell/schedule/profile")
+            .then(res => res.json())
+            .then((profiles) => {
+                    const newProfiles = profiles.length > 0 ? profiles : [this.getNewEmptyProfile()];
+                    const openProfilePredicate = openProfileId ?
+                        profile => profile.id === openProfileId : profile => profile.active;
+                    let openProfile = profiles.find(openProfilePredicate);
+                    openProfile = openProfile ? openProfile : newProfiles[0];
+                    this.setState({
+                        profiles: newProfiles,
+                        openProfile: openProfile,
+                        timerIsOn: profiles.length > 0
+                    })
+                }
+            );
+    }
+
     addNewScheduleItem = ev => {
         ev.preventDefault();
         const profile = {...this.state.openProfile};
         const items = profile.scheduleItems.slice();
-        items.push({time: '', startSec: '', duration: '', id: uuidv4()});
+        items.push({time: '', startSec: '', duration: '', id: uuidv4(), existing: false});
         profile.scheduleItems = items;
         this.setState({
             openProfile: profile
@@ -111,12 +122,12 @@ export default class App extends React.Component {
 
     handleProfileActiveChange(checked) {
         const newProfile = {...this.state.openProfile};
-        newProfile.isActive = checked;
+        newProfile.active = checked;
         const newProfiles = this.state.profiles.slice();
         if (checked) {
             newProfiles.forEach(profile => {
-                if (profile.isActive && profile.id !== newProfile.id) {
-                    profile.isActive = false;
+                if (profile.active && profile.id !== newProfile.id) {
+                    profile.active = false;
                 }
             });
         }
@@ -195,19 +206,39 @@ export default class App extends React.Component {
         const {openProfile, profiles} = this.state;
         const newProfiles = this.getUpToDateProfiles(openProfile, profiles);
 
-        this.setState({
-            profiles: newProfiles
-        }, () => {
-            fetch('/bell/schedule/profile', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newProfiles)
+        fetch('/bell/schedule/profile', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newProfiles)
+        })
+            .then(() => {
+                this.getServerProfiles(openProfile.id)
             })
-                .catch(error => console.error(error))
-        });
+            .catch(error => console.error(error))
     };
+
+    handleStartSecondChange = ev => {
+        this.updateOpenProfileScheduledItemById('startSec', ev);
+    };
+
+    handleDurationChange = ev => {
+        this.updateOpenProfileScheduledItemById('duration', ev);
+    };
+
+    updateOpenProfileScheduledItemById(fieldToUpdate, ev) {
+        const newOpenProfile = {...this.state.openProfile};
+        const itemId = ev.target.id.substr(fieldToUpdate.length);
+        let newScheduleItems = newOpenProfile.scheduleItems.slice();
+        const changedItem = newScheduleItems.find(item => item.id === itemId);
+        changedItem[fieldToUpdate] = ev.target.value;
+        newOpenProfile.scheduleItems = newScheduleItems;
+
+        this.setState({
+            openProfile: newOpenProfile
+        })
+    }
 
     handleSelectAudioFile = ev => {
         const newOpenProfile = {...this.state.openProfile};
@@ -267,8 +298,9 @@ export default class App extends React.Component {
         return {
             id: uuidv4(),
             name: 'New',
-            isActive: false,
-            scheduleItems: [{id: uuidv4(), time: '', startSec: '', duration: ''}]
+            active: false,
+            existing: false,
+            scheduleItems: [{id: uuidv4(), time: '', startSec: '', duration: '', existing: false}]
         };
     }
 

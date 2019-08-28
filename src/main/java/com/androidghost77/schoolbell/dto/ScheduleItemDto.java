@@ -16,4 +16,5 @@ public class ScheduleItemDto {
     private String audioPath;
     private String audioFile;
     private String fileExtension;
+    private boolean existing = true;
 }

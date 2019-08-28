@@ -2,24 +2,22 @@ package com.androidghost77.schoolbell.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
-import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.domain.Persistable;
 
 import lombok.Data;
 
 @Data
 @Entity
 @Table(name = "schedule")
-public class Schedule {
+public class Schedule implements Persistable<String> {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
     @Column(name = "time")
@@ -37,4 +35,12 @@ public class Schedule {
     @ManyToOne
     @JoinColumn(name = "profile_id")
     private Profile profile;
+
+    @Transient
+    private boolean existing = true;
+
+    @Override
+    public boolean isNew() {
+        return !this.existing;
+    }
 }

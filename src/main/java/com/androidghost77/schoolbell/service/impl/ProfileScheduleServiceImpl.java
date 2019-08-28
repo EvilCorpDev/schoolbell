@@ -1,5 +1,9 @@
 package com.androidghost77.schoolbell.service.impl;
 
+import static java.util.stream.Collectors.toList;
+
+import static javax.transaction.Transactional.TxType.REQUIRES_NEW;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,7 +13,11 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import com.androidghost77.schoolbell.dto.ProfileScheduleDto;
@@ -46,14 +54,15 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
         return scheduleRepo.findAllByProfileName(profileName)
                 .stream()
                 .map(scheduleMapper::scheduleToDto)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override
-    public void saveNewProfileSchedule(List<ProfileScheduleDto> profilesDto) {
+    @Transactional
+    public void saveProfilesSchedule(List<ProfileScheduleDto> profilesDto) {
         List<Profile> profilesToSave = profilesDto.stream()
                 .map(profileMapper::dtoToProfileSchedule)
-                .collect(Collectors.toList());
+                .collect(toList());
         List<Profile> savedProfiles = profileRepo.saveAll(profilesToSave);
 
         IntStream.range(0, profilesDto.size())
@@ -65,8 +74,8 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
     public List<ProfileScheduleDto> getAllProfiles() {
         return profileRepo.findAll()
                 .stream()
-                .map(profileMapper::profileScheduleToDto)
-                .collect(Collectors.toList());
+                .map(profileMapper::profileScheduleToDtoWithScheduleList)
+                .collect(toList());
     }
 
     @Override
@@ -88,7 +97,7 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
                 .peek(this::saveAudioFile)
                 .map(scheduleMapper::dtoToSchedule)
                 .peek(item -> item.setProfile(savedProfile))
-                .collect(Collectors.toList());
+                .collect(toList());
         scheduleRepo.saveAll(scheduleList);
     }
 

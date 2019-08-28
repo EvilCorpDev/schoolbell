@@ -39,7 +39,7 @@ export default class TabRightColumn extends React.Component {
                 {delProfilePopup}
                 <div className="container row">
                     <div className="mr-2 mt-1">Profile is active</div>
-                    <Switch onChange={handleProfileActiveChange} checked={profile.isActive}
+                    <Switch onChange={handleProfileActiveChange} checked={profile.active}
                             onHandleColor="#2693e6" onColor="#86d3ff" offColor="#888" offHandleColor="#fff"
                             handleDiameter={30} height={20} width={48} uncheckedIcon={false}
                             checkedIcon={false}/>

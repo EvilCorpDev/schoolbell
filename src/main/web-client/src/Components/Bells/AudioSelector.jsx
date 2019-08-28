@@ -2,32 +2,22 @@ import React from 'react'
 
 export default class AudioSelector extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            startSec: this.props.startSec,
-            duration: this.props.duration
-        };
-
-        this.handleFromSecChange = this.handleFromSecChange.bind(this);
-        this.handleDurationChange = this.handleDurationChange.bind(this);
-    }
-
     render() {
-        const {bellId, handleSelectAudioFile} = this.props;
+        const {
+            bellId, startSec, duration, handleSelectAudioFile,
+            handleDurationChange, handleStartSecondChange
+        } = this.props;
         return (
             <div className="row">
                 <div className="col-7">
                     <div className="row">
                         <div className="col-6 pr-1">
-                            <input className="form-control text-center" type="number"
-                                   placeholder="From sec" value={this.state.startSec}
-                                   onChange={this.handleFromSecChange}/>
+                            <input className="form-control text-center" type="number" id={"startSec" + bellId}
+                                   placeholder="From sec" value={startSec} onChange={handleStartSecondChange}/>
                         </div>
                         <div className="col-6 pl-1  pr-0">
-                            <input className="form-control text-center" type="number"
-                                   placeholder="Duration" value={this.state.duration}
-                                   onChange={this.handleDurationChange}/>
+                            <input className="form-control text-center" type="number" id={"duration" + bellId}
+                                   placeholder="Duration" value={duration} onChange={handleDurationChange}/>
                         </div>
                     </div>
                 </div>
@@ -35,18 +25,6 @@ export default class AudioSelector extends React.Component {
             </div>
         )
     }
-
-    handleFromSecChange = ev => {
-        this.setState({
-            startSec: ev.target.value
-        })
-    };
-
-    handleDurationChange = ev => {
-        this.setState({
-            duration: ev.target.value
-        })
-    };
 
     static createSelectAudioBtn(handleSelectAudioFile, bellId) {
         return (

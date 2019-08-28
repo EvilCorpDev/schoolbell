@@ -20,7 +20,10 @@ export default class BellHolder extends React.Component {
     }
 
     render() {
-        const {bellDetails, showDelBtn, itemNumber, handleSelectAudioFile} = this.props;
+        const {
+            bellDetails, showDelBtn, itemNumber, handleSelectAudioFile,
+            handleStartSecondChange, handleDurationChange
+        } = this.props;
         const displayDelBtnClass = showDelBtn ? 'd-block' : 'd-none';
         return (
             <div className="container mt-3">
@@ -35,7 +38,9 @@ export default class BellHolder extends React.Component {
                 <TimePicker timePickerId={bellDetails.id} time={bellDetails.time}
                             handleTimePickerChanged={this.props.handleTimePickerChanged}/>
                 <AudioSelector startSec={bellDetails.startSec} duration={bellDetails.duration} bellId={bellDetails.id}
-                               handleSelectAudioFile={handleSelectAudioFile}/>
+                               handleSelectAudioFile={handleSelectAudioFile}
+                               handleStartSecondChange={handleStartSecondChange}
+                               handleDurationChange={handleDurationChange}/>
                 <hr className="mt-2"/>
             </div>
         )
