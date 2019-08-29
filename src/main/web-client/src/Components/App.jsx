@@ -18,7 +18,9 @@ export default class App extends React.Component {
                 scheduleItems: [],
                 active: true
             },
-            timerIsOn: true
+            timerIsOn: true,
+            deletedProfileIds: [],
+            deletedScheduledItemsIds: []
         };
 
         this.addNewScheduleItem = this.addNewScheduleItem.bind(this);
@@ -100,6 +102,38 @@ export default class App extends React.Component {
             );
     }
 
+    deleteProfiles(deletedProfilesIds, cb) {
+        fetch('/bell/schedule/profile', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(deletedProfilesIds)
+        })
+            .then(() => {
+                this.setState({
+                    deletedProfilesIds: []
+                }, cb)
+            })
+            .catch(error => console.error(error))
+    }
+
+    deleteScheduleItems(deletedScheduleItemsIds, cb) {
+        fetch('/bell/schedule/profile/bells', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(deletedScheduleItemsIds)
+        })
+            .then(() => {
+                this.setState({
+                    deletedScheduledItemsIds: []
+                }, cb)
+            })
+            .catch(error => console.error(error))
+    }
+
     addNewScheduleItem = ev => {
         ev.preventDefault();
         const profile = {...this.state.openProfile};
@@ -112,11 +146,15 @@ export default class App extends React.Component {
     };
 
     removeScheduleItem(itemId) {
+        const {deletedScheduledItemsIds} = this.state;
+        let newDeletedScheduledItemsIds = deletedScheduledItemsIds.slice();
+        newDeletedScheduledItemsIds.push(itemId);
         const profile = {...this.state.openProfile};
         profile.scheduleItems = profile.scheduleItems.slice()
             .filter(item => item.id !== itemId);
         this.setState({
-            openProfile: profile
+            openProfile: profile,
+            deletedScheduledItemsIds: newDeletedScheduledItemsIds
         })
     };
 
@@ -188,7 +226,9 @@ export default class App extends React.Component {
     };
 
     handleDeleteProfile = () => {
-        const {openProfile, profiles} = this.state;
+        const {openProfile, profiles, deletedProfileIds} = this.state;
+        let newDeletedProfileIds = deletedProfileIds.slice();
+        newDeletedProfileIds.push(openProfile.id);
         let newProfiles = profiles.slice().filter(profile => profile.id !== openProfile.id);
         let newOpenProfile = profiles.length > 0 ? newProfiles[0] : this.getNewEmptyProfile();
         if (newProfiles.length === 0) {
@@ -197,14 +237,21 @@ export default class App extends React.Component {
 
         this.setState({
             openProfile: newOpenProfile,
-            profiles: newProfiles
+            profiles: newProfiles,
+            deletedProfileIds: newDeletedProfileIds
         })
     };
 
     handleSaveAllProfiles = ev => {
         ev.preventDefault();
-        const {openProfile, profiles} = this.state;
+        const {openProfile, profiles, deletedProfileIds, deletedScheduledItemsIds} = this.state;
         const newProfiles = this.getUpToDateProfiles(openProfile, profiles);
+        if (deletedProfileIds.length > 0) {
+            this.deleteProfiles(deletedProfileIds);
+        }
+        if (deletedScheduledItemsIds.length > 0) {
+            this.deleteScheduleItems(deletedScheduledItemsIds);
+        }
 
         fetch('/bell/schedule/profile', {
             method: 'POST',

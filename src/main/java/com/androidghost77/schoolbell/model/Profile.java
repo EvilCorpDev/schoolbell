@@ -2,7 +2,6 @@ package com.androidghost77.schoolbell.model;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -28,7 +27,7 @@ public class Profile implements Persistable<String> {
     @Column(name = "is_active")
     private Boolean isActive;
 
-    @OneToMany(mappedBy = "profile", cascade = {CascadeType.REMOVE})
+    @OneToMany(mappedBy = "profile")
     private List<Schedule> scheduleList;
 
     @Transient

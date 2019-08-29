@@ -2,8 +2,6 @@ package com.androidghost77.schoolbell.service.impl;
 
 import static java.util.stream.Collectors.toList;
 
-import static javax.transaction.Transactional.TxType.REQUIRES_NEW;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,13 +9,10 @@ import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import com.androidghost77.schoolbell.dto.ProfileScheduleDto;
@@ -76,6 +71,19 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
                 .stream()
                 .map(profileMapper::profileScheduleToDtoWithScheduleList)
                 .collect(toList());
+    }
+
+    @Override
+    @Transactional
+    public void deleteProfiles(List<String> profileIds) {
+        scheduleRepo.deleteAllByProfileId(profileIds);
+        profileRepo.deleteAllById(profileIds);
+    }
+
+    @Override
+    @Transactional
+    public void deleteScheduleItems(List<String> scheduleItemsIds) {
+        scheduleRepo.deleteAllById(scheduleItemsIds);
     }
 
     @Override

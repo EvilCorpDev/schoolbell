@@ -3,6 +3,7 @@ package com.androidghost77.schoolbell.rest;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +39,19 @@ public class ScheduleController {
     @PostMapping("/profile")
     public void saveProfileSchedule(@RequestBody List<ProfileScheduleDto> newProfileSchedule) {
         profileScheduleService.saveProfilesSchedule(newProfileSchedule);
+        profileScheduleService.startScheduling(true);
+    }
+
+    @DeleteMapping("/profile")
+    public void deleteProfiles(@RequestBody List<String> profileIds) {
+        profileScheduleService.deleteProfiles(profileIds);
+        profileScheduleService.startScheduling(true);
+    }
+
+    @DeleteMapping("/profile/bells")
+    public void deleteScheduleItems(@RequestBody List<String> scheduleItemsIds) {
+        profileScheduleService.deleteScheduleItems(scheduleItemsIds);
+        profileScheduleService.startScheduling(true);
     }
 
     @PostMapping("/start")
