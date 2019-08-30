@@ -3,6 +3,9 @@ import Switch from 'react-switch'
 import Timer from "../Timer";
 import EditProfileNamePopup from '../popups/EditProfileNamePopup'
 import DeletePopup from '../popups/DeletePopup'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faTimes} from '@fortawesome/free-solid-svg-icons'
+import {faEdit} from '@fortawesome/free-regular-svg-icons'
 
 export default class TabRightColumn extends React.Component {
 
@@ -28,11 +31,11 @@ export default class TabRightColumn extends React.Component {
                     {profile.name}
                     <button type="button" className="edit-btn ml-3" data-toggle="modal"
                             data-target="#editProfileNamePopup">
-                        <small><i className="far fa-edit fa-1x"/></small>
+                        <small><FontAwesomeIcon icon={faEdit} size="1x"/></small>
                     </button>
                     <button className="btn float-auto del-profile" data-toggle="modal"
                             data-target="#delProfilePopup">
-                        <small><i className="fas fa-times fa-2x"/></small>
+                        <small><FontAwesomeIcon icon={faTimes} size="2x"/></small>
                     </button>
                 </h2>
                 {editPopup}

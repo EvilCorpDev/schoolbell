@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import TimePicker from '../TimePicker'
 import AudioSelector from '../AudioSelector'
 import './style.css'
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faTimesCircle} from "@fortawesome/free-regular-svg-icons";
 
 export default class BellHolder extends React.Component {
     static propTypes = {
@@ -33,7 +35,7 @@ export default class BellHolder extends React.Component {
                     </h3>
                 </div>
                 <button type="button" className={displayDelBtnClass + " del-btn"} onClick={this.handleRemoveItem}>
-                    <h3><i className="far fa-times-circle"/></h3>
+                    <h3><FontAwesomeIcon icon={faTimesCircle}/></h3>
                 </button>
                 <TimePicker timePickerId={bellDetails.id} time={bellDetails.time}
                             handleTimePickerChanged={this.props.handleTimePickerChanged}/>

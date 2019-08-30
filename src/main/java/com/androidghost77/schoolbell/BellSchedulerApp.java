@@ -1,5 +1,6 @@
 package com.androidghost77.schoolbell;
 
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -45,19 +46,20 @@ public class BellSchedulerApp extends Application {
     private void addAppToTray() {
         try {
             // ensure awt toolkit is initialized.
-            java.awt.Toolkit.getDefaultToolkit();
+            Toolkit.getDefaultToolkit();
 
-            if (!java.awt.SystemTray.isSupported()) {
+            if (!SystemTray.isSupported()) {
                 log.info("No system tray support, application exiting.");
                 Platform.exit();
             }
 
-            java.awt.SystemTray tray = java.awt.SystemTray.getSystemTray();
+            SystemTray tray = SystemTray.getSystemTray();
             InputStream uri = getClass().getClassLoader().getResourceAsStream(TRAYICON_PNG);
-            java.awt.Image image = ImageIO.read(uri);
-            java.awt.TrayIcon trayIcon = new java.awt.TrayIcon(image);
+            Image image = ImageIO.read(uri);
+            TrayIcon trayIcon = new TrayIcon(image);
+            trayIcon.setImageAutoSize(true);
 
-            java.awt.MenuItem exitItem = new java.awt.MenuItem("Вихiд");
+            MenuItem exitItem = new MenuItem("Вихiд");
             exitItem.addActionListener(event -> {
                 Platform.exit();
                 tray.remove(trayIcon);
@@ -66,13 +68,13 @@ public class BellSchedulerApp extends Application {
             });
 
             // setup the popup menu for the application.
-            final java.awt.PopupMenu popup = new java.awt.PopupMenu();
+            final PopupMenu popup = new PopupMenu();
             popup.add(exitItem);
             trayIcon.setPopupMenu(popup);
 
             // add the application tray icon to the system tray.
             tray.add(trayIcon);
-        } catch (java.awt.AWTException | IOException e) {
+        } catch (AWTException | IOException e) {
             log.warn("Unable to init system tray", e);
         }
     }

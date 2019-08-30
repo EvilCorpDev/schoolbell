@@ -4,6 +4,8 @@ import './style.css'
 import TimeBlock from './TimeBlock'
 import SelectTime from './SelectTime'
 import moment from 'moment'
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faClock} from "@fortawesome/free-regular-svg-icons";
 
 export default class TimePicker extends React.Component {
 
@@ -64,7 +66,7 @@ export default class TimePicker extends React.Component {
                                    onKeyPress={this.handleKeyPressed} placeholder="Оберіть час"/>
                             <button type="button" className="btn btn-outline-secondary col-2"
                                     onClick={this.handleClockBtn}>
-                                <i className="far fa-clock"/>
+                                <FontAwesomeIcon icon={faClock}/>
                             </button>
                         </div>
                         <div>

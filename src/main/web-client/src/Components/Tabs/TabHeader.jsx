@@ -1,5 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faPlus} from '@fortawesome/free-solid-svg-icons'
 import './style.css'
 
 export default class TabHeader extends React.Component {
@@ -31,7 +33,7 @@ export default class TabHeader extends React.Component {
                 {headers}
                 <li className="nav-item">
                     <button className="nav-link add-profile" onClick={handleAddProfile}>
-                        <i className="fas fa-plus"/> Додати профайл
+                        <FontAwesomeIcon icon={faPlus}/> Додати профайл
                     </button>
                 </li>
             </ul>

@@ -4,6 +4,8 @@ import uuidv4 from 'uuid/v4'
 import TabHeader from './Tabs/TabHeader'
 import TabLeftColumn from './Tabs/TabLeftColumn'
 import TabRightColumn from './Tabs/TabRightColumn'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faPlus, faSave} from '@fortawesome/free-solid-svg-icons'
 
 export default class App extends React.Component {
 
@@ -72,10 +74,10 @@ export default class App extends React.Component {
                     <div className="row mt-4">
                         <div className="col-10 ml-auto mr-5 mb-2">
                             <button className='btn btn-info float-right' onClick={this.handleSaveAllProfiles}>
-                                <i className="fas fa-save"/> Зберегти
+                                <FontAwesomeIcon icon={faSave}/> Зберегти
                             </button>
                             <button className='btn btn-secondary float-right mr-4' onClick={this.addNewScheduleItem}>
-                                <i className="fas fa-plus"/> Додати дзвінок
+                                <FontAwesomeIcon icon={faPlus}/> Додати дзвінок
                             </button>
                         </div>
                     </div>
