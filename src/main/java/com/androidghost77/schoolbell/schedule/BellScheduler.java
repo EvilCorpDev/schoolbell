@@ -85,14 +85,7 @@ public class BellScheduler implements Scheduler<Schedule> {
                 return;
             }
             Player player = new AudioPlayer();
-            player.play(trackPath, startSec);
-            try {
-                Thread.sleep(durationInSec * 1000);
-            } catch (InterruptedException e) {
-                log.warn("Sleep was interrupted", e);
-                throw new RuntimeException(e);
-            }
-            player.stop();
+            player.play(trackPath, startSec, durationInSec);
         }
 
         private boolean todayIsExceptionDay() {

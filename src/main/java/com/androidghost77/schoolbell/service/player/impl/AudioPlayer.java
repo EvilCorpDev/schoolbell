@@ -12,10 +12,11 @@ public class AudioPlayer implements Player {
 
     private MediaPlayer mediaPlayer;
 
-    public void play(String fileName, long startSec) {
+    public void play(String fileName, long startSec, long duration) {
         Media hit = new Media(new File(fileName).toURI().toString());
         mediaPlayer = new MediaPlayer(hit);
         mediaPlayer.setStartTime(Duration.seconds(startSec));
+        mediaPlayer.setStopTime(Duration.seconds(startSec + duration));
         mediaPlayer.play();
     }
 
