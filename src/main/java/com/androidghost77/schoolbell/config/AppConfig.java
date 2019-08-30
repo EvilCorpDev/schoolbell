@@ -3,6 +3,7 @@ package com.androidghost77.schoolbell.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.androidghost77.schoolbell.listener.AppStartListener;
 import com.androidghost77.schoolbell.mapper.ProfileMapper;
 import com.androidghost77.schoolbell.mapper.ScheduleMapper;
 import com.androidghost77.schoolbell.model.Schedule;
@@ -26,5 +27,10 @@ public class AppConfig {
     public ProfileScheduleService profileScheduleService(ProfileRepo profileRepo, ScheduleRepo scheduleRepo,
             ScheduleMapper scheduleMapper, ProfileMapper profileMapper, Scheduler<Schedule> bellScheduler) {
         return new ProfileScheduleServiceImpl(profileRepo, scheduleRepo, scheduleMapper, profileMapper, bellScheduler);
+    }
+
+    @Bean
+    public AppStartListener appStartListener(ProfileScheduleService service) {
+        return new AppStartListener(service);
     }
 }

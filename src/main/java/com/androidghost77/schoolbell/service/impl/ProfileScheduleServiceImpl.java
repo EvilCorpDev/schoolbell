@@ -27,6 +27,7 @@ import com.androidghost77.schoolbell.repo.ScheduleRepo;
 import com.androidghost77.schoolbell.schedule.Scheduler;
 import com.androidghost77.schoolbell.service.ProfileScheduleService;
 import com.androidghost77.schoolbell.service.func.ThrowingFunction;
+import com.androidghost77.schoolbell.utils.Util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,8 +42,6 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
     private final ProfileMapper profileMapper;
     private final Scheduler<Schedule> bellScheduler;
     private final Base64.Decoder base64Decoder = Base64.getMimeDecoder();
-
-    private static final String AUDIO_PATH = "./audio";
 
     @Override
     public List<ScheduleItemDto> getScheduleItems(String profileName) {
@@ -116,7 +115,7 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
 
         byte[] decodedBytes = base64Decoder.decode(scheduleItemDto.getAudioFile());
         String fileName = UUID.randomUUID().toString();
-        Path filePath = Paths.get(getFilePath(fileName, scheduleItemDto.getFileExtension()));
+        Path filePath = Paths.get(Util.getFilePath(fileName, scheduleItemDto.getFileExtension()));
         try {
             Files.createDirectories(filePath.getParent());
             Files.write(filePath, decodedBytes);
@@ -130,7 +129,7 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
 
     private void deletePreviousAudio(String itemId) {
         scheduleRepo.findById(itemId)
-                .map(schedule -> String.format("%s/%s", AUDIO_PATH, schedule.getAudioPath()))
+                .map(Util::getScheduleAudioPath)
                 .map(Paths::get)
                 .ifPresent(path -> applyFuncWrappingExc(Files::deleteIfExists, path));
     }
@@ -141,9 +140,5 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
         } catch (Exception exc) {
             throw new RuntimeException(exc);
         }
-    }
-
-    private String getFilePath(String fileName, String fileExtension) {
-        return String.format("%s/%s.%s", AUDIO_PATH, fileName, fileExtension);
     }
 }

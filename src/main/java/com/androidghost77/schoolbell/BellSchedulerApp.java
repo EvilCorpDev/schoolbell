@@ -17,13 +17,15 @@ import javafx.stage.Stage;
         UserDetailsServiceAutoConfiguration.class})
 public class BellSchedulerApp extends Application {
 
+    private static String[] args;
+
     public static void main(String[] args) {
-        SpringApplication.run(BellSchedulerApp.class, args);
+        BellSchedulerApp.args = args;
         Application.launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //nothing
+        SpringApplication.run(BellSchedulerApp.class, BellSchedulerApp.args);
     }
 }
