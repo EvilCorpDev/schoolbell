@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class BellScheduler implements Scheduler<Schedule> {
 
-    private static final long DAY_MILLISECONDS = 5 * 60 * 1000L;
+    private static final long DAY_MILLISECONDS = 24 * 60 * 60 * 1000L;
     private static final List<Timer> timers = new ArrayList<>();
 
     private final ExceptionDayRepo exceptionDayRepo;

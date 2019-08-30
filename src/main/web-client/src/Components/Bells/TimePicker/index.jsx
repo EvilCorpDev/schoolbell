@@ -61,7 +61,7 @@ export default class TimePicker extends React.Component {
                             <input className={inputErrorClass + "col-10 form-control text-center"} type="text"
                                    id={timePickerId} value={timeStr} onChange={this.handleInputChanged}
                                    autoComplete="off" onKeyDown={this.handleKeyDown} onBlur={this.handleInputOnBlur}
-                                   onKeyPress={this.handleKeyPressed} placeholder="Select time"/>
+                                   onKeyPress={this.handleKeyPressed} placeholder="Оберіть час"/>
                             <button type="button" className="btn btn-outline-secondary col-2"
                                     onClick={this.handleClockBtn}>
                                 <i className="far fa-clock"/>
@@ -82,9 +82,9 @@ export default class TimePicker extends React.Component {
         if (this.state.selectPopup.timeBlocks.length === 0) {
             return (
                 <div className="row d-flex justify-content-center popup">
-                    <TimeBlock incFun={this.incHours} decFun={this.decHours} timeDesc="hours"
+                    <TimeBlock incFun={this.incHours} decFun={this.decHours} timeDesc="години"
                                timeValue={time.get('hours')} handleShowSelectTime={this.handleShowSelectHours}/>
-                    <TimeBlock incFun={this.incMins} decFun={this.decMins} timeDesc="mins"
+                    <TimeBlock incFun={this.incMins} decFun={this.decMins} timeDesc="хвилини"
                                timeValue={time.get('minutes')} handleShowSelectTime={this.handleShowSelectMins}/>
                 </div>
             );

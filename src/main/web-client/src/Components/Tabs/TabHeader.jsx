@@ -15,7 +15,6 @@ export default class TabHeader extends React.Component {
     render() {
         const {openProfileId, handleChangeOpenedProfile, handleAddProfile} = this.props;
         const headers = this.props.profiles.map(profile => {
-            //passive-link
             const btnClassList = profile.id === openProfileId ? "active-btn active" : "passive-link";
             const liClassList = profile.id === openProfileId ? "active-tab" : "passive-link";
             return (
@@ -32,7 +31,7 @@ export default class TabHeader extends React.Component {
                 {headers}
                 <li className="nav-item">
                     <button className="nav-link add-profile" onClick={handleAddProfile}>
-                        <i className="fas fa-plus"/> Add profile
+                        <i className="fas fa-plus"/> Додати профайл
                     </button>
                 </li>
             </ul>

@@ -12,12 +12,12 @@ export default class TabRightColumn extends React.Component {
             getRestartTimer, getTimerDistance, handleEditProfileName, handleDeleteProfile
         } = this.props;
         const editPopup = this.props.profile.name === undefined ? '' : (
-            <EditProfileNamePopup popupHeader={"Edit profile name"} editLabel="Name" popupId="editProfileNamePopup"
+            <EditProfileNamePopup popupHeader={"Редагувати ім'я профілю"} editLabel="Ім'я" popupId="editProfileNamePopup"
                                   profileName={profile.name} handleEditProfileName={handleEditProfileName}
                                   openProfileId={profile.id}/>
         );
         const delProfilePopup = this.props.profile.name === undefined ? '' : (
-            <DeletePopup delEntityName={"profile " + this.props.profile.name} popupId="delProfilePopup"
+            <DeletePopup delEntityName={"профіль " + this.props.profile.name} popupId="delProfilePopup"
                          handleDeleteAction={handleDeleteProfile}
                          delEntityId={profile.id}/>
         );
@@ -38,13 +38,13 @@ export default class TabRightColumn extends React.Component {
                 {editPopup}
                 {delProfilePopup}
                 <div className="container row">
-                    <div className="mr-2 mt-1">Profile is active</div>
+                    <div className="mr-2 mt-1">Профіль активний</div>
                     <Switch onChange={handleProfileActiveChange} checked={profile.active}
                             onHandleColor="#2693e6" onColor="#86d3ff" offColor="#888" offHandleColor="#fff"
                             handleDiameter={30} height={20} width={48} uncheckedIcon={false}
                             checkedIcon={false}/>
                 </div>
-                <p>Next bell will rings in:</p>
+                <p>Наступний дзвінок через:</p>
                 <Timer setRestartTimer={setRestartTimer} getRestartTimer={getRestartTimer}
                        getTimerDistance={getTimerDistance}/>
             </div>

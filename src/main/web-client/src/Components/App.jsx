@@ -72,10 +72,10 @@ export default class App extends React.Component {
                     <div className="row mt-4">
                         <div className="col-10 ml-auto mr-5 mb-2">
                             <button className='btn btn-info float-right' onClick={this.handleSaveAllProfiles}>
-                                <i className="fas fa-save"/> Save
+                                <i className="fas fa-save"/> Зберегти
                             </button>
                             <button className='btn btn-secondary float-right mr-4' onClick={this.addNewScheduleItem}>
-                                <i className="fas fa-plus"/> Add bell
+                                <i className="fas fa-plus"/> Додати дзвінок
                             </button>
                         </div>
                     </div>

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {withLeadingZero, negativeToZero} from '../utils'
+import {negativeToZero, withLeadingZero} from '../utils'
 
 export default class Timer extends React.Component {
     static propTypes = {
@@ -35,26 +35,26 @@ export default class Timer extends React.Component {
                         className="col-2 rounded d-flex flex-column justify-content-center align-items-center">
                         <div className="timer-days">{withLeadingZero(this.state.days)}</div>
                         <p className="row mb-0">
-                            <small>days</small>
+                            <small>дні</small>
                         </p>
                     </div>
                     <p>:</p>
                     <div
                         className="col-2 rounded d-flex flex-column justify-content-center align-items-center">
                         <div className="timer-hours">{withLeadingZero(this.state.hours)}</div>
-                        <small>hours</small>
+                        <small>год</small>
                     </div>
                     <p>:</p>
                     <div
                         className="col-2 rounded d-flex flex-column justify-content-center align-items-center">
                         <div className="timer-mins">{withLeadingZero(this.state.mins)}</div>
-                        <small>mins</small>
+                        <small>хвил</small>
                     </div>
                     <p>:</p>
                     <div
                         className="col-2 rounded d-flex flex-column justify-content-center align-items-center">
                         <div className="timer-secs">{withLeadingZero(this.state.secs)}</div>
-                        <small>secs</small>
+                        <small>сек</small>
                     </div>
                 </div>
             </div>
