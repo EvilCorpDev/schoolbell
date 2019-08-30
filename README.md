@@ -3,7 +3,7 @@ Simple school bell scheduler
 
 Bell scheduler with profile support and web ui configuration
 
-#How to build
+# How to build
 - Unix Systems  
 Run `build.sh` script and it will
 build app. Final jar file you can find in `target` folder.
@@ -19,9 +19,9 @@ build app. Final jar file you can find in `target` folder.
     f) From project root folder (where pom.xml placed) run `mvn clean package` command.
     Final jar file will be placed in `target` folder.
 
-#How to run
+# How to run
 For both UNIX and Windows you can run app with `java -jar school-bell-1.0-SNAPSHOT.jar` 
 command or by simple double click on `school-bell-1.0-SNAPSHOT.jar` file.
 
-#After app start
+# After app start
 When app started go to `localhost:9000/bell` for web UI
