@@ -25,3 +25,9 @@ command or by simple double click on `school-bell-1.0-SNAPSHOT.jar` file.
 
 # After app start
 When app started go to `localhost:9000/bell` for web UI
+
+# Develop mode
+For developing mode:  
+   a) Run `npm start` from `src/main/web-client`  
+   b) Run `.jar` file or start app from `Intellij`  
+App will be available at `localhost:3000`
