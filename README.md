@@ -8,7 +8,7 @@ Bell scheduler with profile support and web ui configuration
 Run `build.sh` script and it will
 build app. Final jar file you can find in `target` folder.
 - Windows  
-    a) Build web-ui client at `src/main/web-client by` `npm run build` command  
+    a) Build web-ui client at `src/main/web-client` by `npm run build` command  
     b) Move files from `src/main/web-client/build/static/css` into 
     `src/main/web-client/build/css`  
     c) Move files from `src/main/web-client/build/static/js` into 

@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
         UserDetailsServiceAutoConfiguration.class})
 public class BellSchedulerApp extends Application {
 
-    private static final String TRAYICON_PNG = "trayicon.png";
+    private static final String TRAY_ICON_PNG = "trayicon.png";
 
     private static String[] args;
     private static ConfigurableApplicationContext ctx;
@@ -54,7 +54,7 @@ public class BellSchedulerApp extends Application {
             }
 
             SystemTray tray = SystemTray.getSystemTray();
-            InputStream uri = getClass().getClassLoader().getResourceAsStream(TRAYICON_PNG);
+            InputStream uri = getClass().getClassLoader().getResourceAsStream(TRAY_ICON_PNG);
             Image image = ImageIO.read(uri);
             TrayIcon trayIcon = new TrayIcon(image);
             trayIcon.setImageAutoSize(true);
