@@ -57,7 +57,7 @@ public class BellSchedulerApp extends Application {
             java.awt.Image image = ImageIO.read(uri);
             java.awt.TrayIcon trayIcon = new java.awt.TrayIcon(image);
 
-            java.awt.MenuItem exitItem = new java.awt.MenuItem("Exit");
+            java.awt.MenuItem exitItem = new java.awt.MenuItem("Вихiд");
             exitItem.addActionListener(event -> {
                 Platform.exit();
                 tray.remove(trayIcon);
