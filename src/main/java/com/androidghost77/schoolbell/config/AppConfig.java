@@ -14,6 +14,8 @@ import com.androidghost77.schoolbell.schedule.BellScheduler;
 import com.androidghost77.schoolbell.schedule.Scheduler;
 import com.androidghost77.schoolbell.service.ProfileScheduleService;
 import com.androidghost77.schoolbell.service.impl.ProfileScheduleServiceImpl;
+import com.androidghost77.schoolbell.service.player.Player;
+import com.androidghost77.schoolbell.service.player.impl.AudioPlayer;
 
 @Configuration
 public class AppConfig {
@@ -32,5 +34,10 @@ public class AppConfig {
     @Bean
     public AppStartListener appStartListener(ProfileScheduleService service) {
         return new AppStartListener(service);
+    }
+
+    @Bean
+    public Player audioPlayer() {
+        return new AudioPlayer();
     }
 }

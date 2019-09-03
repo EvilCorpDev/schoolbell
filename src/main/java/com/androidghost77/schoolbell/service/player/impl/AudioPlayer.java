@@ -1,6 +1,11 @@
 package com.androidghost77.schoolbell.service.player.impl;
 
+import static com.androidghost77.schoolbell.utils.Util.applyRunnableWrappingExc;
+
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Base64;
 
 import com.androidghost77.schoolbell.service.player.Player;
 
@@ -16,6 +21,25 @@ public class AudioPlayer implements Player {
 
     public void play(String fileName, long startSec, Long duration) {
         Media hit = new Media(new File(fileName).toURI().toString());
+        playMedia(startSec, duration, hit, null);
+    }
+
+    @Override
+    public void playBase64(String base64Audio, long startSec, Long duration) {
+        byte[] audioBytes = Base64.getDecoder().decode(base64Audio);
+        try {
+            File tempFile = File.createTempFile("Play", ".mp3", null);
+            FileOutputStream fos = new FileOutputStream(tempFile);
+            fos.write(audioBytes);
+            fos.close();
+            Media hit = new Media(tempFile.toURI().toString());
+            playMedia(startSec, duration, hit, () -> applyRunnableWrappingExc(tempFile::delete));
+        } catch (IOException exc) {
+            log.error("Can't create tmp file", exc);
+        }
+    }
+
+    private void playMedia(long startSec, Long duration, Media hit, Runnable callback) {
         mediaPlayer = new MediaPlayer(hit);
         mediaPlayer.setStartTime(Duration.seconds(startSec));
         mediaPlayer.setOnReady(() -> {
@@ -29,6 +53,9 @@ public class AudioPlayer implements Player {
                 throw new RuntimeException(e);
             }
             mediaPlayer.stop();
+            if (callback != null) {
+                callback.run();
+            }
         });
     }
 

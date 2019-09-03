@@ -1,3 +1,18 @@
+export const BASE_64_PREFIX = 'base64,';
+
+export const getBase64 = (file, callback) => {
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function () {
+        if (callback) {
+            callback(reader.result)
+        }
+    };
+    reader.onerror = function (error) {
+        console.log('Error reading file: ', error);
+    };
+};
+
 export const withLeadingZero = time => {
     if (time === '' || time === undefined || isNaN(time)) {
         return '';
