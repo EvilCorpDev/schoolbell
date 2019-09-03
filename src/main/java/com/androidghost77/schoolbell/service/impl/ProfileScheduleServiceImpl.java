@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.IntStream;
 
 import javax.transaction.Transactional;
@@ -101,29 +100,30 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
 
     private void saveScheduleItems(List<ScheduleItemDto> scheduleItemDtos, Profile savedProfile) {
         List<Schedule> scheduleList = scheduleItemDtos.stream()
-                .peek(this::saveAudioFile)
+                .peek(this::saveAudioFileIfNotExists)
                 .map(scheduleMapper::dtoToSchedule)
                 .peek(item -> item.setProfile(savedProfile))
                 .collect(toList());
         scheduleRepo.saveAll(scheduleList);
     }
 
-    private void saveAudioFile(ScheduleItemDto scheduleItemDto) {
+    private void saveAudioFileIfNotExists(ScheduleItemDto scheduleItemDto) {
         if (StringUtils.isEmpty(scheduleItemDto.getAudioFile())) {
             return;
         }
 
         byte[] decodedBytes = base64Decoder.decode(scheduleItemDto.getAudioFile());
-        String fileName = UUID.randomUUID().toString();
-        Path filePath = Paths.get(Util.getFilePath(fileName, scheduleItemDto.getFileExtension()));
-        try {
-            Files.createDirectories(filePath.getParent());
-            Files.write(filePath, decodedBytes);
-        } catch (IOException exc) {
-            log.error("Can't save file into: {}", filePath, exc);
-            throw new SaveException(exc);
+        Path filePath = Paths.get(Util.getFilePath(scheduleItemDto.getFileName()));
+        if (!filePath.toFile().isFile()) {
+            try {
+                Files.createDirectories(filePath.getParent());
+                Files.write(filePath, decodedBytes);
+            } catch (IOException exc) {
+                log.error("Can't save file into: {}", filePath, exc);
+                throw new SaveException(exc);
+            }
         }
-        scheduleItemDto.setAudioPath(String.format("%s.%s", fileName, scheduleItemDto.getFileExtension()));
+        scheduleItemDto.setAudioPath(scheduleItemDto.getFileName());
         deletePreviousAudio(scheduleItemDto.getId());
     }
 

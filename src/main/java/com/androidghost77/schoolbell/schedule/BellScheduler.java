@@ -52,7 +52,7 @@ public class BellScheduler implements Scheduler<Schedule> {
                 schedule.getDuration(), schedule.getStartSec());
     }
 
-    private void scheduleTimer(String name, String startTime, String trackPath, long durationInSec, long startSec) {
+    private void scheduleTimer(String name, String startTime, String trackPath, Long durationInSec, long startSec) {
         Timer timer = new Timer(name);
 
         LocalDateTime scheduleTime = LocalDateTime.of(LocalDate.now(), LocalTime.parse(startTime));
@@ -74,7 +74,7 @@ public class BellScheduler implements Scheduler<Schedule> {
     @RequiredArgsConstructor
     private static class PlayTask extends TimerTask {
 
-        private final long durationInSec;
+        private final Long durationInSec;
         private final long startSec;
         private final String trackPath;
         private final ExceptionDayRepo exceptionDayRepo;
@@ -86,13 +86,6 @@ public class BellScheduler implements Scheduler<Schedule> {
             }
             Player player = new AudioPlayer();
             player.play(trackPath, startSec, durationInSec);
-            try {
-                Thread.sleep(durationInSec * 1000);
-            } catch (InterruptedException e) {
-                log.warn("Sleep was interrupted", e);
-                throw new RuntimeException(e);
-            }
-            player.stop();
         }
 
         private boolean todayIsExceptionDay() {

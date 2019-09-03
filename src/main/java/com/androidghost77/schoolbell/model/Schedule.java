@@ -24,7 +24,7 @@ public class Schedule implements Persistable<String> {
     private String time;
 
     @Column(name = "duration")
-    private long duration;
+    private Long duration;
 
     @Column(name = "start_sec")
     private long startSec;

@@ -251,7 +251,7 @@ export default class App extends React.Component {
         let newDeletedProfileIds = deletedProfileIds.slice();
         newDeletedProfileIds.push(openProfile.id);
         let newProfiles = profiles.slice().filter(profile => profile.id !== openProfile.id);
-        let newOpenProfile = profiles.length > 0 ? newProfiles[0] : this.getNewEmptyProfile();
+        let newOpenProfile = newProfiles.length > 0 ? newProfiles[0] : this.getNewEmptyProfile();
         if (newProfiles.length === 0) {
             newProfiles.push(newOpenProfile);
         }
@@ -334,7 +334,7 @@ export default class App extends React.Component {
         const editedItemIdx = newScheduleItems.findIndex(profile => profile.id === itemId);
 
         const audioFile = ev.target.files[0];
-        newScheduleItems[editedItemIdx].fileExtension = this.getFileExtension(audioFile);
+        newScheduleItems[editedItemIdx].fileName = audioFile.name;
         this.getBase64(audioFile, result => {
             const mimePrefixIndex = result.indexOf(App.BASE_64_PREFIX);
             newScheduleItems[editedItemIdx].audioFile = result.substr(mimePrefixIndex + App.BASE_64_PREFIX.length);
@@ -342,11 +342,6 @@ export default class App extends React.Component {
             this.setState(newOpenProfile);
         });
     };
-
-    getFileExtension(audioFile) {
-        const extensionDelimiterIdx = audioFile.name.lastIndexOf('.');
-        return audioFile.name.substr(extensionDelimiterIdx + 1);
-    }
 
     getBase64(file, callback) {
         let reader = new FileReader();
@@ -383,7 +378,7 @@ export default class App extends React.Component {
     getNewEmptyProfile() {
         return {
             id: uuidv4(),
-            name: 'New',
+            name: 'Новий',
             active: false,
             existing: false,
             scheduleItems: [{id: uuidv4(), time: '', startSec: '', duration: '', existing: false}]

@@ -11,10 +11,10 @@ public class ScheduleItemDto {
 
     private String id;
     private String time;
-    private long duration;
+    private Long duration;
     private long startSec;
     private String audioPath;
     private String audioFile;
-    private String fileExtension;
+    private String fileName;
     private boolean existing = true;
 }

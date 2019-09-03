@@ -9,8 +9,8 @@ public final class Util {
     private Util() {
     }
 
-    public static String getFilePath(String fileName, String fileExtension) {
-        return String.format("%s/%s.%s", AUDIO_PATH, fileName, fileExtension);
+    public static String getFilePath(String fileName) {
+        return String.format("%s/%s", AUDIO_PATH, fileName);
     }
 
     public static String getScheduleAudioPath(Schedule schedule) {
