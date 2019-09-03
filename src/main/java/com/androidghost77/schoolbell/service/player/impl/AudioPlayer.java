@@ -16,7 +16,7 @@ public class AudioPlayer implements Player {
         Media hit = new Media(new File(fileName).toURI().toString());
         mediaPlayer = new MediaPlayer(hit);
         mediaPlayer.setStartTime(Duration.seconds(startSec));
-        mediaPlayer.setStopTime(Duration.seconds(startSec + duration));
+        //mediaPlayer.setStopTime(Duration.seconds((double) startSec + duration));
         mediaPlayer.play();
     }
 

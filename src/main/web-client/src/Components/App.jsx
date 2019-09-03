@@ -6,10 +6,12 @@ import TabLeftColumn from './Tabs/TabLeftColumn'
 import TabRightColumn from './Tabs/TabRightColumn'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faPlus, faSave} from '@fortawesome/free-solid-svg-icons'
+import './style.css'
 
 export default class App extends React.Component {
 
     static BASE_64_PREFIX = 'base64,';
+    static MIN_WIDTH_EXTENDED_SAVE = 1500;
 
     constructor(props) {
         super(props);
@@ -22,9 +24,13 @@ export default class App extends React.Component {
             },
             timerIsOn: true,
             deletedProfileIds: [],
-            deletedScheduledItemsIds: []
+            deletedScheduledItemsIds: [],
+            saveHover: false,
+            width: 0,
+            height: 0
         };
 
+        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
         this.addNewScheduleItem = this.addNewScheduleItem.bind(this);
         this.handleProfileActiveChange = this.handleProfileActiveChange.bind(this);
         this.handleTimePickerChanged = this.handleTimePickerChanged.bind(this);
@@ -45,11 +51,18 @@ export default class App extends React.Component {
 
     componentDidMount() {
         this.getServerProfiles();
+        this.updateWindowDimensions();
+        window.addEventListener('resize', this.updateWindowDimensions);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateWindowDimensions);
     }
 
     render() {
-        const {profiles, openProfile} = this.state;
+        const {profiles, openProfile, saveHover} = this.state;
         this.setRestartTimer(openProfile.scheduleItems.size !== 0);
+        const saveClass = !saveHover ? "rounded-circle" : "";
 
         return (
             <div className="shadow main-container">
@@ -73,17 +86,23 @@ export default class App extends React.Component {
 
                     <div className="row mt-4">
                         <div className="col-10 ml-auto mr-5 mb-2">
-                            <button className='btn btn-info float-right' onClick={this.handleSaveAllProfiles}>
-                                <FontAwesomeIcon icon={faSave}/> Зберегти
-                            </button>
                             <button className='btn btn-secondary float-right mr-4' onClick={this.addNewScheduleItem}>
                                 <FontAwesomeIcon icon={faPlus}/> Додати дзвінок
                             </button>
                         </div>
                     </div>
+                    <button className={saveClass + ' btn btn-info float-right save-btn'}
+                            onClick={this.handleSaveAllProfiles} onMouseEnter={this.handleSaveMouseEnter}
+                            onMouseLeave={this.handleSaveMouseLeave}>
+                        <FontAwesomeIcon icon={faSave} size="2x"/> {saveClass === "" ? "Зберегти" : ""}
+                    </button>
                 </div>
             </div>
         )
+    }
+
+    updateWindowDimensions() {
+        this.setState({width: window.innerWidth, height: window.innerHeight});
     }
 
     getServerProfiles(openProfileId) {
@@ -288,6 +307,24 @@ export default class App extends React.Component {
             openProfile: newOpenProfile
         })
     }
+
+    handleSaveMouseEnter = ev => {
+        ev.preventDefault();
+        if (this.state.width >= App.MIN_WIDTH_EXTENDED_SAVE) {
+            this.setState({
+                saveHover: true
+            })
+        }
+    };
+
+    handleSaveMouseLeave = ev => {
+        ev.preventDefault();
+        if (this.state.width >= App.MIN_WIDTH_EXTENDED_SAVE) {
+            this.setState({
+                saveHover: false
+            })
+        }
+    };
 
     handleSelectAudioFile = ev => {
         const newOpenProfile = {...this.state.openProfile};
