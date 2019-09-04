@@ -1,0 +1,9 @@
+.exception-item {
+    background: #4e555b;
+    color: white;
+}
+
+.vl {
+    border-right: 1px solid #e6e6e6;
+    height: 100%;
+}

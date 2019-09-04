@@ -25,8 +25,8 @@ public class ExceptionDay {
     @Column(name = "day_of_week")
     private int dayOfWeek;
 
-    @Column(name = "is_repeatable")
-    private boolean isRepeatable;
+    @Column(name = "repeatable")
+    private boolean repeatable;
 
     @Column(name = "specific_day")
     private LocalDate specificDay;
