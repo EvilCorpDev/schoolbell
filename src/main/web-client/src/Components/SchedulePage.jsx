@@ -7,6 +7,9 @@ import {faPlus, faSave} from "@fortawesome/free-solid-svg-icons";
 import uuidv4 from "uuid/v4";
 import moment from "moment";
 import {BASE_64_PREFIX, getBase64} from '../utils'
+import Alert from 'react-s-alert'
+import 'react-s-alert/dist/s-alert-default.css'
+import 'react-s-alert/dist/s-alert-css-effects/stackslide.css';
 
 export default class SchedulePage extends React.Component {
     static MIN_WIDTH_EXTENDED_SAVE = 1500;
@@ -75,7 +78,8 @@ export default class SchedulePage extends React.Component {
                                        handleStartSecondChange={this.handleStartSecondChange}
                                        handleDurationChange={this.handleDurationChange}/>
                         <TabRightColumn handleProfileActiveChange={this.handleProfileActiveChange}
-                                        setRestartTimer={this.setRestartTimer} getRestartTimer={this.getRestartTimer}
+                                        setRestartTimer={this.setRestartTimer}
+                                        getRestartTimer={this.getRestartTimer}
                                         getTimerDistance={this.getTimerDistance} profile={openProfile}
                                         handleEditProfileName={this.handleEditProfileName}
                                         handleDeleteProfile={this.handleDeleteProfile}/>
@@ -83,7 +87,8 @@ export default class SchedulePage extends React.Component {
 
                     <div className="row mt-4">
                         <div className="col-10 ml-auto mr-5 mb-2">
-                            <button className='btn btn-secondary float-right mr-4' onClick={this.addNewScheduleItem}>
+                            <button className='btn btn-secondary float-right mr-4'
+                                    onClick={this.addNewScheduleItem}>
                                 <FontAwesomeIcon icon={faPlus}/> Додати дзвінок
                             </button>
                         </div>
@@ -94,6 +99,7 @@ export default class SchedulePage extends React.Component {
                         <FontAwesomeIcon icon={faSave} size="2x"/> {saveClass === "" ? "Зберегти" : ""}
                     </button>
                 </div>
+                <Alert stack={{limit: 3}} />
             </div>
         )
     }
@@ -102,7 +108,7 @@ export default class SchedulePage extends React.Component {
         this.setState({width: window.innerWidth, height: window.innerHeight});
     }
 
-    getServerProfiles(openProfileId) {
+    getServerProfiles(openProfileId, callback) {
         fetch("/bell/schedule/profile")
             .then(res => res.json())
             .then((profiles) => {
@@ -115,7 +121,7 @@ export default class SchedulePage extends React.Component {
                         profiles: newProfiles,
                         openProfile: openProfile,
                         timerIsOn: profiles.length > 0
-                    })
+                    }, callback);
                 }
             );
     }
@@ -279,9 +285,13 @@ export default class SchedulePage extends React.Component {
             body: JSON.stringify(newProfiles)
         })
             .then(() => {
-                this.getServerProfiles(openProfile.id)
+                this.getServerProfiles(openProfile.id,
+                    () =>  Alert.success('Збережено', {position: 'top', effect: 'stackslide', timeout: 1300}));
             })
-            .catch(error => console.error(error))
+            .catch(error => {
+                console.error(error);
+                Alert.error('Помилка збереження', {position: 'top', effect: 'stackslide', timeout: 1000})
+            })
     };
 
     handleStartSecondChange = ev => {
