@@ -64,8 +64,9 @@ export default class SchedulePage extends React.Component {
         const {profiles, openProfile, saveHover} = this.state;
         this.setRestartTimer(openProfile.scheduleItems.size !== 0);
         const saveClass = !saveHover ? "rounded-circle" : "";
+        const showPageClass = this.props.displayClass === 'active' ? '' : 'd-none';
         return (
-            <div className="schedulePage">
+            <div className={showPageClass + " schedulePage"}>
                 <TabHeader profiles={profiles} openProfileId={this.state.openProfile.id}
                            handleChangeOpenedProfile={this.handleChangeOpenedProfile}
                            handleAddProfile={this.handleAddProfile}/>

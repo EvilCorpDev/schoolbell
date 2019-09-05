@@ -31,7 +31,7 @@ export default class ExceptionItem extends React.Component {
                                    localeUtils={MomentLocaleUtils}/>
                     </div>
                     <VerticalLine />
-                    <WeekDayPicker widthClass="col-5"/>
+                    <WeekDayPicker widthClass="col-5" selectedIndex={0}/>
                 </div>
                 <hr className="mb-0 mt-1"/>
             </div>

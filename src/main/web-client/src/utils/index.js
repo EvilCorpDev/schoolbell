@@ -1,5 +1,10 @@
 export const BASE_64_PREFIX = 'base64,';
 
+export const PAGES = {
+    schedulePage: 'schedulePage',
+    exceptionsPage: 'exceptionsPage'
+};
+
 export const getBase64 = (file, callback) => {
     let reader = new FileReader();
     reader.readAsDataURL(file);

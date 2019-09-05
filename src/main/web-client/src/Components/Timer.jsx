@@ -27,6 +27,10 @@ export default class Timer extends React.Component {
         }
     }
 
+    componentWillUnmount() {
+        clearInterval(this.timerId);
+    }
+
     render() {
         return (
             <div className="timer container-fluid text-primary">
