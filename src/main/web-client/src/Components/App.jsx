@@ -5,6 +5,7 @@ import Navbar from './Navbar'
 import ReactJumbotron from './ReactJumbotron'
 import {PAGES} from '../utils'
 import './style.css'
+import {BrowserRouter as Router, Route} from 'react-router-dom'
 
 export default class App extends React.Component {
 
@@ -22,28 +23,29 @@ export default class App extends React.Component {
         const scheduleClass = this.state.activePage === PAGES.schedulePage ? 'active' : '';
         const exceptionsClass = this.state.activePage === PAGES.exceptionsPage ? 'active' : '';
         return (
-            <div className="main-container">
-                <div id="react-jumbotron">
-                    <ReactJumbotron />
-                </div>
-                <div id="react-navbar">
-                    <Navbar scheduleClass={scheduleClass} exceptionsClass={exceptionsClass}
-                            handlePageClick={this.handlePageClick}/>
-                </div>
-                <div className="container p-3 bg-light w-100 rounded">
-                    <div id="main-container" className="shadow">
-                        <div className="shadow">
-                            <SchedulePage displayClass={scheduleClass}/>
-                            <ExceptionsPage displayClass={exceptionsClass}/>
+            <Router>
+                <div className="main-container">
+                    <div id="react-jumbotron">
+                        <ReactJumbotron/>
+                    </div>
+                    <div id="react-navbar">
+                        <Navbar scheduleClass={scheduleClass} exceptionsClass={exceptionsClass}
+                                handlePageClick={this.handlePageClick}/>
+                    </div>
+                    <div className="container p-3 bg-light w-100 rounded">
+                        <div id="main-container" className="shadow">
+                            <div className="shadow">
+                                <Route exact path="/" component={SchedulePage} />
+                                <Route path="/exceptions/" component={ExceptionsPage} />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </Router>
         )
     }
 
     handlePageClick = ev => {
-        ev.preventDefault();
         this.setState({
             activePage: ev.target.id
         })

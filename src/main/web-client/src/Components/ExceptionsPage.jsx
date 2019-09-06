@@ -19,14 +19,13 @@ export default class ExceptionsPage extends React.Component {
     }
 
     render() {
-        const showPageClass = this.props.displayClass === 'active' ? '' : 'd-none';
         const exceptions = this.state.exceptions.map(exception => {
             return (
                 <ExceptionItem {...exception} key={exception.id} />
             );
         });
         return (
-            <div className={showPageClass + " exceptionsPage"}>
+            <div className="exceptionsPage">
                 {exceptions}
                 {exceptions}
             </div>

@@ -1,5 +1,6 @@
 import React from 'react'
 import {PAGES} from '../utils'
+import {Link} from 'react-router-dom'
 
 export default function Navbar(props) {
     const {handlePageClick, scheduleClass, exceptionsClass} = props;
@@ -8,14 +9,14 @@ export default function Navbar(props) {
             <div className="navbar-collapse" id="navbarNav">
                 <ul className="navbar-nav">
                     <li className={"nav-item " + scheduleClass}>
-                        <button id={PAGES.schedulePage} className="btn nav-link" onClick={handlePageClick}>
+                        <Link id={PAGES.schedulePage} className="nav-link" to="/" onClick={handlePageClick}>
                             Розклад <span className="sr-only">(current)</span>
-                        </button>
+                        </Link>
                     </li>
                     <li className={"nav-item " + exceptionsClass}>
-                        <button id={PAGES.exceptionsPage} className="btn nav-link" onClick={handlePageClick}>
+                        <Link id={PAGES.exceptionsPage} className="nav-link" to="exceptions" onClick={handlePageClick}>
                             Виняткові дні
-                        </button>
+                        </Link>
                     </li>
                 </ul>
             </div>
