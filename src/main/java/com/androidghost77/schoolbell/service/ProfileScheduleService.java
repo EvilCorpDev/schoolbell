@@ -13,6 +13,8 @@ public interface ProfileScheduleService {
 
     List<ProfileScheduleDto> getAllProfiles();
 
+    List<String> getAllProfileNames();
+
     void deleteProfiles(List<String> profileIds);
 
     void deleteScheduleItems(List<String> scheduleItemsIds);

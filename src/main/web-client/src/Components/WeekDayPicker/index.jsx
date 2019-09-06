@@ -1,43 +1,44 @@
 import React from 'react'
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faChevronLeft, faChevronRight} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faChevronLeft, faChevronRight} from '@fortawesome/free-solid-svg-icons'
+import {WEEK_DAY_ID_PREFIX} from '../../utils'
 import './style.css'
 
 export default class WeekDayPicker extends React.Component {
 
     MAX_ITEMS = 5;
-    WEEK_DAY_ID_PREFIX = 'weekDay';
 
     constructor(props) {
         super(props);
 
         this.state = {
-            startPosition: this.calculateInitialStartPosition(props.selectedIndex),
-            endPosition: this.calculateInitialEndPosition(props.selectedIndex),
-            selectedIndex: props.selectedIndex
+            startPosition: this.calculateInitialStartPosition(props.dayOfWeek),
+            endPosition: this.calculateInitialEndPosition(props.dayOfWeek)
         }
     }
 
     defaultShortWeekDayNames = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"];
 
     render() {
-        const {widthClass, shortWeekDayNames} = this.props;
-        const {selectedIndex} = this.state;
-        const weekDays = this.getWeekDayNumbers(shortWeekDayNames);
+        const {
+            widthClass, shortWeekDayNames, disabledClass,
+            handleWeekDayClick, dayOfWeek
+        } = this.props;
+        const weekDays = this.getWeekDaysToDisplay(shortWeekDayNames);
         const newWeekDays = weekDays.map((weekDay, idx) => {
-            const backgroundClass = weekDay.originalIndex === selectedIndex ? 'btn-primary' : 'btn-outline-secondary';
+            const backgroundClass = weekDay.originalIndex === dayOfWeek ? 'btn-primary' : 'btn-outline-secondary';
             return (
                 <div className="col-2" key={idx}>
-                    <button id={this.WEEK_DAY_ID_PREFIX + weekDay.originalIndex}
+                    <button id={WEEK_DAY_ID_PREFIX + weekDay.originalIndex}
                             className={"btn rounded-circle " + backgroundClass}
-                            onClick={this.handleWeekDayClick}>
+                            onClick={handleWeekDayClick}>
                         <h5 className="mt-1">{weekDay.value}</h5>
                     </button>
                 </div>
             );
         });
         return (
-            <div className={widthClass + " d-flex justify-content-center pl-0"}>
+            <div className={widthClass + " d-flex justify-content-center pl-0 " + disabledClass}>
                 <div className="row align-self-center w-100">
                     <div className="col-11 row pl-0 pr-0">
                         <div className="col-1 align-self-center">
@@ -53,7 +54,6 @@ export default class WeekDayPicker extends React.Component {
                         </div>
                     </div>
                 </div>
-                <div className="col-1"/>
             </div>
         );
     }
@@ -82,23 +82,14 @@ export default class WeekDayPicker extends React.Component {
         } else if (endPosition - startPosition >= this.MAX_ITEMS) {
             newEndPosition = endPosition - 1;
         }
+
         this.setState({
             startPosition: newStartPosition,
             endPosition: newEndPosition
         })
     };
 
-    handleWeekDayClick = ev => {
-        ev.preventDefault();
-        const {selectedIndex} = this.state;
-        let newSelectedIndex = Number(ev.currentTarget.id.substr(this.WEEK_DAY_ID_PREFIX.length));
-        newSelectedIndex = newSelectedIndex === selectedIndex ? undefined : newSelectedIndex;
-        this.setState({
-            selectedIndex: newSelectedIndex
-        })
-    };
-
-    getWeekDayNumbers(shortWeekDayNames) {
+    getWeekDaysToDisplay(shortWeekDayNames) {
         const {startPosition, endPosition} = this.state;
         const weekDays = shortWeekDayNames ? shortWeekDayNames : this.defaultShortWeekDayNames;
         let newWeekDays = weekDays.slice(startPosition, endPosition);
@@ -117,10 +108,10 @@ export default class WeekDayPicker extends React.Component {
         return newWeekDays;
     }
 
-    calculateInitialStartPosition(selectedIndex) {
+    calculateInitialStartPosition(dayOfWeek) {
         let startPosition = 0;
-        if (selectedIndex !== undefined) {
-            startPosition = selectedIndex - 2;
+        if (dayOfWeek !== undefined) {
+            startPosition = dayOfWeek - 2;
             if (startPosition < 0) {
                 startPosition = this.defaultShortWeekDayNames.length + startPosition; // making '+' here because startIndex < 0
             }
@@ -128,11 +119,11 @@ export default class WeekDayPicker extends React.Component {
         return startPosition;
     }
 
-    calculateInitialEndPosition(selectedIndex) {
+    calculateInitialEndPosition(dayOfWeek) {
         let endIndex = this.MAX_ITEMS;
-        if (selectedIndex !== undefined) {
-            const startIndex = selectedIndex - 2;
-            endIndex = selectedIndex + 2;
+        if (dayOfWeek !== undefined) {
+            const startIndex = dayOfWeek - 2;
+            endIndex = dayOfWeek + 2;
             if (startIndex < 0) {
                 endIndex = this.defaultShortWeekDayNames.length
             }

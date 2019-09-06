@@ -33,8 +33,8 @@ export default class App extends React.Component {
                                 handlePageClick={this.handlePageClick}/>
                     </div>
                     <div className="container p-3 bg-light w-100 rounded">
-                        <div id="main-container" className="shadow">
-                            <div className="shadow">
+                        <div id="main-container" >
+                            <div >
                                 <Route exact path="/" component={SchedulePage} />
                                 <Route path="/exceptions/" component={ExceptionsPage} />
                             </div>

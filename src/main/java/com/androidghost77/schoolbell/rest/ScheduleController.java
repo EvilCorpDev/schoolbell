@@ -31,6 +31,11 @@ public class ScheduleController {
         return profileScheduleService.getAllProfiles();
     }
 
+    @GetMapping("/profile/name")
+    public List<String> getAllProfileNames() {
+        return profileScheduleService.getAllProfileNames();
+    }
+
     @GetMapping("/profile/{profileName}")
     public List<ScheduleItemDto> getProfileSchedule(@PathVariable("profileName") String profileName) {
         return profileScheduleService.getScheduleItems(profileName);

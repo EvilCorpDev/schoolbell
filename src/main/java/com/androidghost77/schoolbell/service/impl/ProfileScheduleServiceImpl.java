@@ -72,6 +72,11 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
     }
 
     @Override
+    public List<String> getAllProfileNames() {
+        return profileRepo.getAllProfileNames();
+    }
+
+    @Override
     @Transactional
     public void deleteProfiles(List<String> profileIds) {
         scheduleRepo.deleteAllByProfileId(profileIds);

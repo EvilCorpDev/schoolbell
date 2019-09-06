@@ -65,7 +65,7 @@ export default class SchedulePage extends React.Component {
         this.setRestartTimer(openProfile.scheduleItems.size !== 0);
         const saveClass = !saveHover ? "rounded-circle" : "";
         return (
-            <div className="schedulePage">
+            <div className="schedulePage shadow">
                 <TabHeader profiles={profiles} openProfileId={this.state.openProfile.id}
                            handleChangeOpenedProfile={this.handleChangeOpenedProfile}
                            handleAddProfile={this.handleAddProfile}/>

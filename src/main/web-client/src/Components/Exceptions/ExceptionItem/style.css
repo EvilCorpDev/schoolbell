@@ -3,7 +3,24 @@
     color: white;
 }
 
+.del-exception-btn {
+    position: absolute;
+    z-index: 1000;
+    right: 0.5rem;
+    top: 0.5rem;
+    color: #6c757d;
+}
+
+.del-exception-btn:hover {
+    color: #a71d2a;
+}
+
 .vl {
     border-right: 1px solid #e6e6e6;
     height: 100%;
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.4;
 }
