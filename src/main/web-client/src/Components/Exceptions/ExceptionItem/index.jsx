@@ -27,7 +27,7 @@ export default class ExceptionItem extends React.Component {
     }
 
     render() {
-        const {id, profileNames, displayDelBtnClass, handleExceptionItem} = this.props;
+        const {id, profileNames, displayDelBtnClass, handleRemoveExceptionItem} = this.props;
         const disabledDayPickerClass = this.state.dayOfWeek !== undefined ? 'disabled' : '';
         const disabledWeekDayPickerClass = this.state.selectedDay !== undefined ? 'disabled' : '';
         const profileOptions = profileNames.map((name, index) => {
@@ -38,9 +38,9 @@ export default class ExceptionItem extends React.Component {
             )
         });
         return (
-            <div className="shadow mb-3 mt-3 position-relative">
+            <div className="shadow mb-3 mt-3 position-relative bg-light">
                 <button className={displayDelBtnClass + " btn del-exception-btn"}
-                        onClick={handleExceptionItem} id={EXCEPTION_ITEM_PREFIX + id}>
+                        onClick={handleRemoveExceptionItem} id={EXCEPTION_ITEM_PREFIX + id}>
                     <h3><FontAwesomeIcon icon={faTimesCircle}/></h3>
                 </button>
                 <div id={id} className="row pt-3 pb-3">

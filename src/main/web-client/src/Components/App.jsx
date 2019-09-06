@@ -3,7 +3,7 @@ import SchedulePage from './SchedulePage'
 import ExceptionsPage from './ExceptionsPage'
 import Navbar from './Navbar'
 import ReactJumbotron from './ReactJumbotron'
-import {PAGES} from '../utils'
+import {getPageName, PAGES} from '../utils'
 import './style.css'
 import {BrowserRouter as Router, Route} from 'react-router-dom'
 
@@ -13,7 +13,7 @@ export default class App extends React.Component {
         super(props);
 
         this.state = {
-            activePage: PAGES.exceptionsPage
+            activePage: getPageName(window.location.pathname)
         };
 
         this.handlePageClick = this.handlePageClick.bind(this);
@@ -32,7 +32,7 @@ export default class App extends React.Component {
                         <Navbar scheduleClass={scheduleClass} exceptionsClass={exceptionsClass}
                                 handlePageClick={this.handlePageClick}/>
                     </div>
-                    <div className="container p-3 bg-light w-100 rounded">
+                    <div className="container">
                         <div id="main-container" >
                             <div >
                                 <Route exact path="/" component={SchedulePage} />
@@ -51,3 +51,5 @@ export default class App extends React.Component {
         })
     }
 }
+
+// withRouter(props => <App {...props} />)

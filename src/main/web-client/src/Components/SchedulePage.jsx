@@ -65,41 +65,43 @@ export default class SchedulePage extends React.Component {
         this.setRestartTimer(openProfile.scheduleItems.size !== 0);
         const saveClass = !saveHover ? "rounded-circle" : "";
         return (
-            <div className="schedulePage shadow">
-                <TabHeader profiles={profiles} openProfileId={this.state.openProfile.id}
-                           handleChangeOpenedProfile={this.handleChangeOpenedProfile}
-                           handleAddProfile={this.handleAddProfile}/>
-                <div className="border p-3">
-                    <div className="row">
-                        <TabLeftColumn scheduleItems={openProfile.scheduleItems}
-                                       removeScheduleItem={this.removeScheduleItem}
-                                       handleTimePickerChanged={this.handleTimePickerChanged}
-                                       handleSelectAudioFile={this.handleSelectAudioFile}
-                                       handleStartSecondChange={this.handleStartSecondChange}
-                                       handleDurationChange={this.handleDurationChange}/>
-                        <TabRightColumn handleProfileActiveChange={this.handleProfileActiveChange}
-                                        setRestartTimer={this.setRestartTimer}
-                                        getRestartTimer={this.getRestartTimer}
-                                        getTimerDistance={this.getTimerDistance} profile={openProfile}
-                                        handleEditProfileName={this.handleEditProfileName}
-                                        handleDeleteProfile={this.handleDeleteProfile}/>
-                    </div>
-
-                    <div className="row mt-4">
-                        <div className="col-10 ml-auto mr-5 mb-2">
-                            <button className='btn btn-secondary float-right mr-4'
-                                    onClick={this.addNewScheduleItem}>
-                                <FontAwesomeIcon icon={faPlus}/> Додати дзвінок
-                            </button>
+            <div className="schedulePage bg-light p-3 w-100 rounded">
+                <div className="shadow">
+                    <TabHeader profiles={profiles} openProfileId={this.state.openProfile.id}
+                               handleChangeOpenedProfile={this.handleChangeOpenedProfile}
+                               handleAddProfile={this.handleAddProfile}/>
+                    <div className="border p-3">
+                        <div className="row">
+                            <TabLeftColumn scheduleItems={openProfile.scheduleItems}
+                                           removeScheduleItem={this.removeScheduleItem}
+                                           handleTimePickerChanged={this.handleTimePickerChanged}
+                                           handleSelectAudioFile={this.handleSelectAudioFile}
+                                           handleStartSecondChange={this.handleStartSecondChange}
+                                           handleDurationChange={this.handleDurationChange}/>
+                            <TabRightColumn handleProfileActiveChange={this.handleProfileActiveChange}
+                                            setRestartTimer={this.setRestartTimer}
+                                            getRestartTimer={this.getRestartTimer}
+                                            getTimerDistance={this.getTimerDistance} profile={openProfile}
+                                            handleEditProfileName={this.handleEditProfileName}
+                                            handleDeleteProfile={this.handleDeleteProfile}/>
                         </div>
+
+                        <div className="row mt-4">
+                            <div className="col-10 ml-auto mr-5 mb-2">
+                                <button className='btn btn-secondary float-right mr-4'
+                                        onClick={this.addNewScheduleItem}>
+                                    <FontAwesomeIcon icon={faPlus}/> Додати дзвінок
+                                </button>
+                            </div>
+                        </div>
+                        <button className={saveClass + ' btn btn-info float-right save-btn'}
+                                onClick={this.handleSaveAllProfiles} onMouseEnter={this.handleSaveMouseEnter}
+                                onMouseLeave={this.handleSaveMouseLeave}>
+                            <FontAwesomeIcon icon={faSave} size="2x"/> {saveClass === "" ? "Зберегти" : ""}
+                        </button>
                     </div>
-                    <button className={saveClass + ' btn btn-info float-right save-btn'}
-                            onClick={this.handleSaveAllProfiles} onMouseEnter={this.handleSaveMouseEnter}
-                            onMouseLeave={this.handleSaveMouseLeave}>
-                        <FontAwesomeIcon icon={faSave} size="2x"/> {saveClass === "" ? "Зберегти" : ""}
-                    </button>
+                    <Alert stack={{limit: 3}}/>
                 </div>
-                <Alert stack={{limit: 3}} />
             </div>
         )
     }
@@ -286,7 +288,7 @@ export default class SchedulePage extends React.Component {
         })
             .then(() => {
                 this.getServerProfiles(openProfile.id,
-                    () =>  Alert.success('Збережено', {position: 'top', effect: 'stackslide', timeout: 1300}));
+                    () => Alert.success('Збережено', {position: 'top', effect: 'stackslide', timeout: 1300}));
             })
             .catch(error => {
                 console.error(error);

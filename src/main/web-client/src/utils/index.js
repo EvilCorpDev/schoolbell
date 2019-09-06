@@ -7,6 +7,15 @@ export const PAGES = {
     exceptionsPage: 'exceptionsPage'
 };
 
+export const getPageName = pathName => {
+    if (pathName === '/') {
+        return PAGES.schedulePage;
+    } else if (pathName === '/exceptions') {
+        return PAGES.exceptionsPage;
+    }
+    return undefined;
+};
+
 export const getBase64 = (file, callback) => {
     let reader = new FileReader();
     reader.readAsDataURL(file);
