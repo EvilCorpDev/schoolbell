@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.util.StringUtils;
 
+import com.androidghost77.schoolbell.dto.ExceptionItemDto;
 import com.androidghost77.schoolbell.dto.ProfileScheduleDto;
 import com.androidghost77.schoolbell.dto.ScheduleItemDto;
 import com.androidghost77.schoolbell.exceptions.SaveException;
@@ -24,6 +25,7 @@ import com.androidghost77.schoolbell.model.Schedule;
 import com.androidghost77.schoolbell.repo.ProfileRepo;
 import com.androidghost77.schoolbell.repo.ScheduleRepo;
 import com.androidghost77.schoolbell.schedule.Scheduler;
+import com.androidghost77.schoolbell.service.ExceptionsService;
 import com.androidghost77.schoolbell.service.ProfileScheduleService;
 import com.androidghost77.schoolbell.service.func.ThrowingFunction;
 import com.androidghost77.schoolbell.utils.Util;
@@ -39,7 +41,8 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
     private final ScheduleRepo scheduleRepo;
     private final ScheduleMapper scheduleMapper;
     private final ProfileMapper profileMapper;
-    private final Scheduler<Schedule> bellScheduler;
+    private final Scheduler<Schedule, ExceptionItemDto> bellScheduler;
+    private final ExceptionsService exceptionsService;
     private final Base64.Decoder base64Decoder = Base64.getMimeDecoder();
 
     @Override
@@ -95,7 +98,7 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
             stopScheduling();
         }
 
-        bellScheduler.schedule(scheduleRepo.findAllByProfileIsActive(true));
+        bellScheduler.schedule(scheduleRepo.findAllByProfileIsActive(true), exceptionsService.getAllExceptionItems());
     }
 
     @Override

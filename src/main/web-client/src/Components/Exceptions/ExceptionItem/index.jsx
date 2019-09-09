@@ -17,19 +17,18 @@ export default class ExceptionItem extends React.Component {
         super(props);
         this.handleDayClick = this.handleDayClick.bind(this);
         this.state = {
-            selectedDay: this.getInitialDate(props),
             locale: 'uk',
-            dayOfWeek: this.props.dayOfWeek,
-            selectedProfile: this.props.profile
+            exceptionId: props.id
         };
 
         this.handleWeekDayClick = this.handleWeekDayClick.bind(this);
     }
 
     render() {
-        const {id, profileNames, displayDelBtnClass, handleRemoveExceptionItem} = this.props;
-        const disabledDayPickerClass = this.state.dayOfWeek !== undefined ? 'disabled' : '';
-        const disabledWeekDayPickerClass = this.state.selectedDay !== undefined ? 'disabled' : '';
+        const selectedDay = this.parseDate(this.props);
+        const {id, profileNames, dayOfWeek, displayDelBtnClass, handleRemoveExceptionItem} = this.props;
+        const disabledDayPickerClass = dayOfWeek !== undefined ? 'disabled' : '';
+        const disabledWeekDayPickerClass = selectedDay !== undefined ? 'disabled' : '';
         const profileOptions = profileNames.map((name, index) => {
             return (
                 <option value={name} key={name + index}>
@@ -46,19 +45,19 @@ export default class ExceptionItem extends React.Component {
                 <div id={id} className="row pt-3 pb-3">
                     <div className={"col-5 d-flex justify-content-center " + disabledDayPickerClass}>
                         <DayPicker onDayClick={this.handleDayClick}
-                                   selectedDays={this.state.selectedDay}
+                                   selectedDays={selectedDay}
                                    locale={this.state.locale}
                                    localeUtils={MomentLocaleUtils}/>
                     </div>
                     <VerticalLine/>
                     <WeekDayPicker widthClass="col-5" disabledClass={disabledWeekDayPickerClass}
-                                   dayOfWeek={this.state.dayOfWeek} handleWeekDayClick={this.handleWeekDayClick}/>
+                                   dayOfWeek={dayOfWeek} handleWeekDayClick={this.handleWeekDayClick}/>
                 </div>
                 <div className="row d-flex justify-content-center mb-5">
                     <div className="col-4">
                         <label htmlFor={"profileSelect" + id}>Виберіть профайл:</label>
                         <select className="form-control" id={"profileSelect" + id}
-                                value={this.state.selectedProfile} onChange={this.handleSelectProfile}>
+                                value={this.props.profile} onChange={this.handleSelectProfile}>
                             {profileOptions}
                         </select>
                     </div>
@@ -69,32 +68,24 @@ export default class ExceptionItem extends React.Component {
     }
 
     handleDayClick(day, {selected}) {
-        if (selected) {
-            // Unselect the day if already selected
-            this.setState({selectedDay: undefined});
-            return;
-        }
-        this.setState({selectedDay: day});
+        this.props.handleCalendarClick(this.state.exceptionId, day, selected)
     }
 
     handleWeekDayClick = ev => {
         ev.preventDefault();
-        const {dayOfWeek} = this.state;
+        const {dayOfWeek} = this.props;
         let newSelectedDay = Number(ev.currentTarget.id.substr(WEEK_DAY_ID_PREFIX.length));
         newSelectedDay = newSelectedDay === dayOfWeek ? undefined : newSelectedDay;
-        this.setState({
-            dayOfWeek: newSelectedDay
-        })
+
+        this.props.handleWeekDayClick(this.state.exceptionId, newSelectedDay);
     };
 
     handleSelectProfile = ev => {
         ev.preventDefault();
-        this.setState({
-            selectedProfile: ev.target.value
-        })
+        this.props.handleSelectProfile(this.state.exceptionId, ev.target.value);
     };
 
-    getInitialDate(props) {
+    parseDate(props) {
         if (props.specificDay !== undefined) {
             return moment(this.props.specificDay, 'DD-MM-YYYY').toDate();
         }

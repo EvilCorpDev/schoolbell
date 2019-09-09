@@ -4,11 +4,8 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
 
@@ -18,16 +15,14 @@ import lombok.Data;
 public class ExceptionDay {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
     @Column(name = "day_of_week")
-    private int dayOfWeek;
-
-    @Column(name = "repeatable")
-    private boolean repeatable;
+    private Integer dayOfWeek;
 
     @Column(name = "specific_day")
     private LocalDate specificDay;
+
+    @Column(name = "profile_name")
+    private String profileName;
 }
