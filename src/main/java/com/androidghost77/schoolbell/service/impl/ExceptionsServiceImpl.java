@@ -40,8 +40,8 @@ public class ExceptionsServiceImpl implements ExceptionsService {
     }
 
     @Override
-    public List<ExceptionItemDto> getExceptionItemsLinkedToActiveProfile() {
-        return exceptionDayRepo.findAllByActiveProfile()
+    public List<ExceptionItemDto> getExceptionItemsWithActiveOrEmptyProfile() {
+        return exceptionDayRepo.findAllByActiveOrEmptyProfile()
                 .stream()
                 .map(exceptionItemMapper::exceptionDayToItem)
                 .collect(Collectors.toList());

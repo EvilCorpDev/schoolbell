@@ -10,7 +10,7 @@ public interface ExceptionsService {
 
     List<ExceptionItemDto> getAllExceptionItemsLinkedToProfile(String profileName);
 
-    List<ExceptionItemDto> getExceptionItemsLinkedToActiveProfile();
+    List<ExceptionItemDto> getExceptionItemsWithActiveOrEmptyProfile();
 
     void saveExceptionItems(List<ExceptionItemDto> itemsToSave);
 

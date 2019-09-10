@@ -13,8 +13,8 @@ public interface ExceptionDayRepo extends JpaRepository<ExceptionDay, String> {
 
     List<ExceptionDay> findAllByProfileName(String profileName);
 
-    @Query("SELECT ed FROM ExceptionDay ed JOIN ed.profile p WHERE p.isActive = true")
-    List<ExceptionDay> findAllByActiveProfile();
+    @Query("SELECT ed FROM ExceptionDay ed LEFT JOIN ed.profile p WHERE (p.isActive = true OR ed.profile IS NULL)")
+    List<ExceptionDay> findAllByActiveOrEmptyProfile();
 
     @Modifying
     @Query("DELETE FROM ExceptionDay WHERE id in :ids")

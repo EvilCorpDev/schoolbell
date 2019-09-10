@@ -23,7 +23,7 @@ public class SchedulerServiceImpl implements SchedulerService {
         }
 
         bellScheduler.schedule(profileScheduleService.getScheduleItemsWithActiveProfile(),
-                exceptionsService.getExceptionItemsLinkedToActiveProfile());
+                exceptionsService.getExceptionItemsWithActiveOrEmptyProfile());
     }
 
     @Override

@@ -94,7 +94,7 @@ public class BellScheduler implements Scheduler<ScheduleItemDto, ExceptionItemDt
 
         private boolean compareExceptionDays(LocalDate today, ExceptionItemDto item) {
             if (item.getDayOfWeek() != null) {
-                return today.getDayOfWeek().getValue() == item.getDayOfWeek();
+                return today.getDayOfWeek().getValue() == item.getDayOfWeek() + 1;
             }
             return today.isEqual(item.getSpecificDay());
         }
