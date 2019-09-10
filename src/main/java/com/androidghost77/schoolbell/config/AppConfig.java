@@ -33,9 +33,10 @@ public class AppConfig {
 
     @Bean
     public ProfileScheduleService profileScheduleService(ProfileRepo profileRepo, ScheduleRepo scheduleRepo,
-                                                         ScheduleMapper scheduleMapper, ProfileMapper profileMapper) {
+                                                         ScheduleMapper scheduleMapper, ProfileMapper profileMapper,
+                                                         ExceptionDayRepo exceptionDayRepo) {
         return new ProfileScheduleServiceImpl(profileRepo, scheduleRepo, scheduleMapper,
-                profileMapper);
+                profileMapper, exceptionDayRepo);
     }
 
     @Bean

@@ -25,6 +25,7 @@ import com.androidghost77.schoolbell.mapper.ProfileMapper;
 import com.androidghost77.schoolbell.mapper.ScheduleMapper;
 import com.androidghost77.schoolbell.model.Profile;
 import com.androidghost77.schoolbell.model.Schedule;
+import com.androidghost77.schoolbell.repo.ExceptionDayRepo;
 import com.androidghost77.schoolbell.repo.ProfileRepo;
 import com.androidghost77.schoolbell.repo.ScheduleRepo;
 import com.androidghost77.schoolbell.service.ProfileScheduleService;
@@ -41,6 +42,7 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
     private final ScheduleRepo scheduleRepo;
     private final ScheduleMapper scheduleMapper;
     private final ProfileMapper profileMapper;
+    private final ExceptionDayRepo exceptionDayRepo;
     private final Base64.Decoder base64Decoder = Base64.getMimeDecoder();
 
     @Override
@@ -96,6 +98,7 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
     @Transactional
     public void deleteProfiles(List<String> profileIds) {
         scheduleRepo.deleteAllByProfileId(profileIds);
+        exceptionDayRepo.deleteAllByProfileId(profileIds);
         profileRepo.deleteAllById(profileIds);
     }
 
