@@ -257,7 +257,9 @@ export default class TimePicker extends React.Component {
     };
 
     handleBodyClick = ev => {
-        if (!ev.target.classList.contains('popup')) {
+        const ownClasses = ev.target.classList;
+        const parentClasses = ev.target.parentNode.classList;
+        if (!(ownClasses.contains('popup') || parentClasses.contains('popup'))) {
             this.handleCloseTimePopup(ev);
         }
     };
