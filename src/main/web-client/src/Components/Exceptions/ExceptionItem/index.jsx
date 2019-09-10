@@ -2,14 +2,14 @@ import React from 'react'
 import VerticalLine from './VerticalLine'
 import WeekDayPicker from '../../WeekDayPicker'
 import DayPicker from 'react-day-picker'
-import MomentLocaleUtils from 'react-day-picker/moment'
 import 'react-day-picker/lib/style.css'
 import moment from 'moment'
+import MomentLocaleUtils from 'react-day-picker/moment'
 import 'moment/locale/uk'
-import {EXCEPTION_ITEM_PREFIX, WEEK_DAY_ID_PREFIX} from '../../../utils'
-import './style.css'
+import {ALL_PROFILES, EXCEPTION_ITEM_PREFIX, WEEK_DAY_ID_PREFIX} from '../../../utils'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faTimesCircle} from '@fortawesome/free-regular-svg-icons'
+import './style.css'
 
 export default class ExceptionItem extends React.Component {
 
@@ -26,9 +26,10 @@ export default class ExceptionItem extends React.Component {
 
     render() {
         const selectedDay = this.parseDate(this.props);
-        const {id, profileNames, dayOfWeek, displayDelBtnClass, handleRemoveExceptionItem} = this.props;
+        const {id, profile, profileNames, dayOfWeek, displayDelBtnClass, handleRemoveExceptionItem} = this.props;
         const disabledDayPickerClass = dayOfWeek !== undefined ? 'disabled' : '';
         const disabledWeekDayPickerClass = selectedDay !== undefined ? 'disabled' : '';
+        const selectedProfile = profile ? profile : ALL_PROFILES;
         const profileOptions = profileNames.map((name, index) => {
             return (
                 <option value={name} key={name + index}>
@@ -57,7 +58,7 @@ export default class ExceptionItem extends React.Component {
                     <div className="col-4">
                         <label htmlFor={"profileSelect" + id}>Виберіть профайл:</label>
                         <select className="form-control" id={"profileSelect" + id}
-                                value={this.props.profile} onChange={this.handleSelectProfile}>
+                                value={selectedProfile} onChange={this.handleSelectProfile}>
                             {profileOptions}
                         </select>
                     </div>
@@ -82,7 +83,8 @@ export default class ExceptionItem extends React.Component {
 
     handleSelectProfile = ev => {
         ev.preventDefault();
-        this.props.handleSelectProfile(this.state.exceptionId, ev.target.value);
+        const selectedProfile = ev.target.value === ALL_PROFILES ? undefined : ev.target.value;
+        this.props.handleSelectProfile(this.state.exceptionId, selectedProfile);
     };
 
     parseDate(props) {

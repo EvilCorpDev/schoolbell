@@ -11,7 +11,16 @@ import com.androidghost77.schoolbell.model.ExceptionDay;
 
 public interface ExceptionDayRepo extends JpaRepository<ExceptionDay, String> {
 
+    List<ExceptionDay> findAllByProfileName(String profileName);
+
+    @Query("SELECT ed FROM ExceptionDay ed JOIN ed.profile p WHERE p.isActive = true")
+    List<ExceptionDay> findAllByActiveProfile();
+
     @Modifying
-    @Query("DELETE FROM ExceptionDay  WHERE id in :ids")
+    @Query("DELETE FROM ExceptionDay WHERE id in :ids")
     void deleteAllById(@Param("ids") List<String> exceptionDayIds);
+
+    @Modifying
+    @Query("DELETE FROM ExceptionDay WHERE profileName in :profileNames")
+    void deleteAllByProfileName(@Param("profileNames") List<String> profileNames);
 }

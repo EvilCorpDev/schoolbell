@@ -1,6 +1,8 @@
 package com.androidghost77.schoolbell.service.impl;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static com.androidghost77.schoolbell.utils.Util.applyFuncWrappingExc;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,13 +10,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import javax.transaction.Transactional;
 
 import org.springframework.util.StringUtils;
 
-import com.androidghost77.schoolbell.dto.ExceptionItemDto;
 import com.androidghost77.schoolbell.dto.ProfileScheduleDto;
 import com.androidghost77.schoolbell.dto.ScheduleItemDto;
 import com.androidghost77.schoolbell.exceptions.SaveException;
@@ -24,10 +27,7 @@ import com.androidghost77.schoolbell.model.Profile;
 import com.androidghost77.schoolbell.model.Schedule;
 import com.androidghost77.schoolbell.repo.ProfileRepo;
 import com.androidghost77.schoolbell.repo.ScheduleRepo;
-import com.androidghost77.schoolbell.schedule.Scheduler;
-import com.androidghost77.schoolbell.service.ExceptionsService;
 import com.androidghost77.schoolbell.service.ProfileScheduleService;
-import com.androidghost77.schoolbell.service.func.ThrowingFunction;
 import com.androidghost77.schoolbell.utils.Util;
 
 import lombok.RequiredArgsConstructor;
@@ -41,13 +41,19 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
     private final ScheduleRepo scheduleRepo;
     private final ScheduleMapper scheduleMapper;
     private final ProfileMapper profileMapper;
-    private final Scheduler<Schedule, ExceptionItemDto> bellScheduler;
-    private final ExceptionsService exceptionsService;
     private final Base64.Decoder base64Decoder = Base64.getMimeDecoder();
 
     @Override
     public List<ScheduleItemDto> getScheduleItems(String profileName) {
         return scheduleRepo.findAllByProfileName(profileName)
+                .stream()
+                .map(scheduleMapper::scheduleToDto)
+                .collect(toList());
+    }
+
+    @Override
+    public List<ScheduleItemDto> getScheduleItemsWithActiveProfile() {
+        return scheduleRepo.findAllByProfileIsActive(true)
                 .stream()
                 .map(scheduleMapper::scheduleToDto)
                 .collect(toList());
@@ -80,6 +86,13 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
     }
 
     @Override
+    public Map<String, Profile> getProfilesByProfileNames(List<String> profileNames) {
+        return profileRepo.findAllByNameIn(profileNames)
+                .stream()
+                .collect(toMap(Profile::getName, Function.identity()));
+    }
+
+    @Override
     @Transactional
     public void deleteProfiles(List<String> profileIds) {
         scheduleRepo.deleteAllByProfileId(profileIds);
@@ -90,20 +103,6 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
     @Transactional
     public void deleteScheduleItems(List<String> scheduleItemsIds) {
         scheduleRepo.deleteAllById(scheduleItemsIds);
-    }
-
-    @Override
-    public void startScheduling(boolean restart) {
-        if (restart) {
-            stopScheduling();
-        }
-
-        bellScheduler.schedule(scheduleRepo.findAllByProfileIsActive(true), exceptionsService.getAllExceptionItems());
-    }
-
-    @Override
-    public void stopScheduling() {
-        bellScheduler.stopSchedule();
     }
 
     private void saveScheduleItems(List<ScheduleItemDto> scheduleItemDtos, Profile savedProfile) {
@@ -140,13 +139,5 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
                 .map(Util::getScheduleAudioPath)
                 .map(Paths::get)
                 .ifPresent(path -> applyFuncWrappingExc(Files::deleteIfExists, path));
-    }
-
-    private <T, R> R applyFuncWrappingExc(ThrowingFunction<T, R> function, T params) {
-        try {
-            return function.apply(params);
-        } catch (Exception exc) {
-            throw new RuntimeException(exc);
-        }
     }
 }

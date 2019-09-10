@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.androidghost77.schoolbell.dto.ProfileScheduleDto;
 import com.androidghost77.schoolbell.dto.ScheduleItemDto;
 import com.androidghost77.schoolbell.service.ProfileScheduleService;
+import com.androidghost77.schoolbell.service.SchedulerService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class ScheduleController {
 
     private final ProfileScheduleService profileScheduleService;
+    private final SchedulerService schedulerService;
 
     @GetMapping("/profile")
     public List<ProfileScheduleDto> getAllProfiles() {
@@ -44,30 +46,30 @@ public class ScheduleController {
     @PostMapping("/profile")
     public void saveProfileSchedule(@RequestBody List<ProfileScheduleDto> newProfileSchedule) {
         profileScheduleService.saveProfilesSchedule(newProfileSchedule);
-        profileScheduleService.startScheduling(true);
+        schedulerService.startScheduling(true);
     }
 
     @DeleteMapping("/profile")
     public void deleteProfiles(@RequestBody List<String> profileIds) {
         profileScheduleService.deleteProfiles(profileIds);
-        profileScheduleService.startScheduling(true);
+        schedulerService.startScheduling(true);
     }
 
     @DeleteMapping("/profile/bells")
     public void deleteScheduleItems(@RequestBody List<String> scheduleItemsIds) {
         profileScheduleService.deleteScheduleItems(scheduleItemsIds);
-        profileScheduleService.startScheduling(true);
+        schedulerService.startScheduling(true);
     }
 
     @PostMapping("/start")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void startScheduling(@RequestParam(name = "restart", defaultValue = "false") boolean restart) {
-        profileScheduleService.startScheduling(restart);
+        schedulerService.startScheduling(restart);
     }
 
     @PostMapping("/stop")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void stopScheduling() {
-        profileScheduleService.stopScheduling();
+        schedulerService.stopScheduling();
     }
 }

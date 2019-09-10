@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.androidghost77.schoolbell.dto.ExceptionItemDto;
 import com.androidghost77.schoolbell.service.ExceptionsService;
 import com.androidghost77.schoolbell.service.ProfileScheduleService;
+import com.androidghost77.schoolbell.service.SchedulerService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +23,7 @@ public class ExceptionsController {
 
     private final ExceptionsService exceptionsService;
     private final ProfileScheduleService profileScheduleService;
+    private final SchedulerService schedulerService;
 
     @GetMapping
     public List<ExceptionItemDto> getAllExceptionItems() {
@@ -31,12 +33,12 @@ public class ExceptionsController {
     @PostMapping
     public void saveExceptions(@RequestBody List<ExceptionItemDto> itemsToSave) {
         exceptionsService.saveExceptionItems(itemsToSave);
-        profileScheduleService.startScheduling(true);
+        schedulerService.startScheduling(true);
     }
 
     @DeleteMapping
     public void deleteExceptionItems(@RequestBody List<String> exceptionItemIds) {
-        exceptionsService.deleteExceptionItems(exceptionItemIds);
-        profileScheduleService.startScheduling(true);
+        exceptionsService.deleteExceptionItemsIds(exceptionItemIds);
+        schedulerService.startScheduling(true);
     }
 }

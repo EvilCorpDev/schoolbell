@@ -1,7 +1,7 @@
 import React from 'react'
 import uuidv4 from "uuid/v4"
 import ExceptionItem from './Exceptions/ExceptionItem/'
-import {EXCEPTION_ITEM_PREFIX} from '../utils'
+import {ALL_PROFILES, EXCEPTION_ITEM_PREFIX} from '../utils'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faPlus, faSave} from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment'
@@ -154,7 +154,7 @@ export default class ExceptionsPage extends React.Component {
             .then(res => res.json())
             .then((profileNames) => {
                     let newProfileNames = profileNames.slice();
-                    newProfileNames.push('Всі профілі');
+                    newProfileNames.push(ALL_PROFILES);
                     this.setState({
                         profileNames: newProfileNames
                     }, callback);
@@ -181,7 +181,8 @@ export default class ExceptionsPage extends React.Component {
     getNewEmptyException() {
         return {
             id: uuidv4(),
-            profile: 'Всі профілі'
+            profile: undefined,
+            existing: false
         }
     }
 

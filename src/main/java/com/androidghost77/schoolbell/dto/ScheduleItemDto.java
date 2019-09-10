@@ -1,5 +1,7 @@
 package com.androidghost77.schoolbell.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +15,7 @@ public class ScheduleItemDto {
     private String time;
     private Long duration;
     private long startSec;
+    @JsonIgnore
     private String audioPath;
     private String audioFile;
     private String fileName;

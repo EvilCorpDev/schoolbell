@@ -1,5 +1,7 @@
 package com.androidghost77.schoolbell.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -15,7 +17,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "schedule")
-public class Schedule implements Persistable<String> {
+public class Schedule implements Persistable<String>, Serializable {
 
     @Id
     private String id;

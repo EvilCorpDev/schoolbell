@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 import org.springframework.util.CollectionUtils;
 
 import com.androidghost77.schoolbell.dto.ExceptionItemDto;
-import com.androidghost77.schoolbell.model.Schedule;
+import com.androidghost77.schoolbell.dto.ScheduleItemDto;
 import com.androidghost77.schoolbell.service.player.Player;
 import com.androidghost77.schoolbell.service.player.impl.AudioPlayer;
 import com.androidghost77.schoolbell.utils.Util;
@@ -22,13 +22,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
-public class BellScheduler implements Scheduler<Schedule, ExceptionItemDto> {
+public class BellScheduler implements Scheduler<ScheduleItemDto, ExceptionItemDto> {
 
     private static final long DAY_MILLISECONDS = 24 * 60 * 60 * 1000L;
     private static final List<Timer> timers = new ArrayList<>();
 
     @Override
-    public void schedule(List<Schedule> scheduleList, List<ExceptionItemDto> exceptionItems) {
+    public void schedule(List<ScheduleItemDto> scheduleList, List<ExceptionItemDto> exceptionItems) {
         if (CollectionUtils.isEmpty(scheduleList)) {
             return;
         }
@@ -43,8 +43,8 @@ public class BellScheduler implements Scheduler<Schedule, ExceptionItemDto> {
         timers.clear();
     }
 
-    private void scheduleTimers(List<Schedule> scheduleList, int index, List<ExceptionItemDto> exceptionItems) {
-        Schedule schedule = scheduleList.get(index - 1);
+    private void scheduleTimers(List<ScheduleItemDto> scheduleList, int index, List<ExceptionItemDto> exceptionItems) {
+        ScheduleItemDto schedule = scheduleList.get(index - 1);
         scheduleTimer("timer " + index, schedule.getTime(), Util.getScheduleAudioPath(schedule),
                 schedule.getDuration(), schedule.getStartSec(), exceptionItems);
     }

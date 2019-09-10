@@ -8,7 +8,13 @@ public interface ExceptionsService {
 
     List<ExceptionItemDto> getAllExceptionItems();
 
+    List<ExceptionItemDto> getAllExceptionItemsLinkedToProfile(String profileName);
+
+    List<ExceptionItemDto> getExceptionItemsLinkedToActiveProfile();
+
     void saveExceptionItems(List<ExceptionItemDto> itemsToSave);
 
-    void deleteExceptionItems(List<String> exceptionItemIds);
+    void deleteExceptionItemsIds(List<String> exceptionItemIds);
+
+    void deleteExceptionItemsByProfileNames(List<String> profileNames);
 }

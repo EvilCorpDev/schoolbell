@@ -14,4 +14,5 @@ public class ExceptionItemDto {
     private LocalDate specificDay;
     private Integer dayOfWeek;
     private String profile;
+    private boolean existing = true;
 }

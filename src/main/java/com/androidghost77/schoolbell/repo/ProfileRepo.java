@@ -14,6 +14,8 @@ public interface ProfileRepo extends JpaRepository<Profile, String> {
     @Query("SELECT name from Profile")
     List<String> getAllProfileNames();
 
+    List<Profile> findAllByNameIn(List<String> profileName);
+
     @Modifying
     @Query("DELETE FROM Profile where id in :ids")
     void deleteAllById(@Param("ids") List<String> ids);

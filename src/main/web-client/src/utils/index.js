@@ -1,6 +1,7 @@
 export const BASE_64_PREFIX = 'base64,';
 export const WEEK_DAY_ID_PREFIX = 'weekDay';
 export const EXCEPTION_ITEM_PREFIX = 'exceptionItem';
+export const ALL_PROFILES = 'Всі профілі';
 
 export const PAGES = {
     schedulePage: 'schedulePage',
