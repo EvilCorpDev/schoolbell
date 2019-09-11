@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import com.androidghost77.schoolbell.dto.ExceptionItemDto;
 import com.androidghost77.schoolbell.dto.ScheduleItemDto;
 import com.androidghost77.schoolbell.listener.AppStartListener;
+import com.androidghost77.schoolbell.logging.RequestResponseLoggingFilter;
 import com.androidghost77.schoolbell.mapper.ExceptionItemMapper;
 import com.androidghost77.schoolbell.mapper.ProfileMapper;
 import com.androidghost77.schoolbell.mapper.ScheduleMapper;
@@ -60,5 +61,10 @@ public class AppConfig {
     @Bean
     public Player audioPlayer() {
         return new AudioPlayer();
+    }
+
+    @Bean
+    public RequestResponseLoggingFilter requestResponseLoggingFilter() {
+        return new RequestResponseLoggingFilter();
     }
 }

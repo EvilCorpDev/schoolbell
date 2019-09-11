@@ -1,20 +1,32 @@
 server:
-    port: 9000
-    servlet:
-        context-path: "/bell"
+  port: 9000
+  servlet:
+    context-path: "/bell"
 spring:
-    application:
-        name: "bell"
-    datasource:
-        initialization-mode: always
-        driver-class-name: "org.h2.Driver"
-        url: "jdbc:h2:file:./bell-schedule"
-    jpa:
-        database-platform: "org.hibernate.dialect.H2Dialect"
-        hibernate:
-            ddl-auto: update
-    h2:
-        console:
-            enabled: true
-    jackson:
-        default-property-inclusion: non_null
+  application:
+    name: "bell"
+  datasource:
+    initialization-mode: always
+    driver-class-name: "org.h2.Driver"
+    url: "jdbc:h2:file:./bell-schedule"
+  jpa:
+    database-platform: "org.hibernate.dialect.H2Dialect"
+    hibernate:
+      ddl-auto: update
+  h2:
+    console:
+      enabled: true
+  jackson:
+    default-property-inclusion: non_null
+  output:
+      ansi:
+          enabled: detect
+management:
+  endpoints:
+    web:
+      exposure:
+        include: httptrace
+logging:
+  level:
+    org.springframework.web: info
+  file: "./logs/bell-schedule.log"
