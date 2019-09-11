@@ -8,6 +8,17 @@ export const PAGES = {
     exceptionsPage: 'exceptionsPage'
 };
 
+export const JUMBOTRON_INFO = {
+    schedulePage: {
+        header: 'Розклад дзвінків',
+        description: 'Тут можна налаштувати розклад дзвінків, вибрати аудіо файл і встановити його тривалість'
+    },
+    exceptionsPage: {
+        header: 'Виняткові дні',
+        description: 'Тут можна налаштувати дні, коли розклад не працюватиме'
+    }
+};
+
 export const getPageName = pathName => {
     if (pathName === '/') {
         return PAGES.schedulePage;

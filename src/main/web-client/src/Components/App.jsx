@@ -3,7 +3,7 @@ import SchedulePage from './SchedulePage'
 import ExceptionsPage from './ExceptionsPage'
 import Navbar from './Navbar'
 import ReactJumbotron from './ReactJumbotron'
-import {getPageName, PAGES} from '../utils'
+import {getPageName, JUMBOTRON_INFO, PAGES} from '../utils'
 import './style.css'
 import {BrowserRouter as Router, Route} from 'react-router-dom'
 
@@ -22,11 +22,13 @@ export default class App extends React.Component {
     render() {
         const scheduleClass = this.state.activePage === PAGES.schedulePage ? 'active' : '';
         const exceptionsClass = this.state.activePage === PAGES.exceptionsPage ? 'active' : '';
+        const jumboHeader = JUMBOTRON_INFO[this.state.activePage].header;
+        const jumboDesc = JUMBOTRON_INFO[this.state.activePage].description;
         return (
             <Router>
                 <div className="main-container">
                     <div id="react-jumbotron">
-                        <ReactJumbotron/>
+                        <ReactJumbotron header={jumboHeader} description={jumboDesc}/>
                     </div>
                     <div id="react-navbar">
                         <Navbar scheduleClass={scheduleClass} exceptionsClass={exceptionsClass}
