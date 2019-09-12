@@ -30,3 +30,4 @@ logging:
   level:
     org.springframework.web: info
   file: "./logs/bell-schedule.log"
+  file.max-history: 7
