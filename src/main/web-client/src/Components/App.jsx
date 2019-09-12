@@ -53,5 +53,3 @@ export default class App extends React.Component {
         })
     }
 }
-
-// withRouter(props => <App {...props} />)

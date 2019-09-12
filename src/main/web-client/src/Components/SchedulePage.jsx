@@ -118,7 +118,7 @@ export default class SchedulePage extends React.Component {
     }
 
     getServerProfiles(openProfileId, callback) {
-        axios.get('/bell/schedule/profile').then(response => {
+        axios.get('/schedule/profile').then(response => {
             const profiles = response.data;
             const newProfiles = profiles.length > 0 ? profiles : [this.getNewEmptyProfile()];
             const openProfilePredicate = openProfileId ?
@@ -137,7 +137,7 @@ export default class SchedulePage extends React.Component {
     }
 
     deleteProfiles(deletedProfileIds, cb) {
-        axios.delete('/bell/schedule/profile', {
+        axios.delete('/schedule/profile', {
             headers: {'Content-Type': 'application/json'},
             data: JSON.stringify(deletedProfileIds)
         }).then(() => {
@@ -151,7 +151,7 @@ export default class SchedulePage extends React.Component {
     }
 
     deleteScheduleItems(deletedScheduledItemsIds, cb) {
-        axios.delete('/bell/schedule/profile/bells', {
+        axios.delete('/schedule/profile/bells', {
             headers: {'Content-Type': 'application/json'},
             data: JSON.stringify(deletedScheduledItemsIds)
         }).then(() => {
@@ -283,7 +283,7 @@ export default class SchedulePage extends React.Component {
             this.deleteScheduleItems(deletedScheduledItemsIds);
         }
 
-        axios.post('/bell/schedule/profile', JSON.stringify(newProfiles), {
+        axios.post('/schedule/profile', JSON.stringify(newProfiles), {
             headers: {'Content-Type': 'application/json'}
         }).then(() => {
             this.getServerProfiles(openProfile.id,

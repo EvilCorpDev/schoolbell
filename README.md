@@ -24,7 +24,7 @@ For both UNIX and Windows you can run app with `java -jar school-bell-1.0-SNAPSH
 command or by simple double click on `school-bell-1.0-SNAPSHOT.jar` file.
 
 # After app start
-When app started go to `localhost:9000/bell` for web UI
+When app started go to `localhost:9000` for web UI
 
 # Develop mode
 For developing mode:  

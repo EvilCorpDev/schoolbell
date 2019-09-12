@@ -125,7 +125,7 @@ export default class ExceptionsPage extends React.Component {
             this.deleteExceptionDaysOnServer(deletedExceptions);
         }
 
-        axios.post('/bell/exception-days', JSON.stringify(exceptions), {
+        axios.post('/exception-days', JSON.stringify(exceptions), {
             headers: {'Content-Type': 'application/json'}
         }).then(() => {
             this.getAndSetExceptionDays(
@@ -138,7 +138,7 @@ export default class ExceptionsPage extends React.Component {
     };
 
     getAndSetExceptionDays(callback) {
-        axios.get('/bell/exception-days').then(response => {
+        axios.get('/exception-days').then(response => {
             const exceptionDays = response.data;
             let newExceptionDays = exceptionDays.slice();
             newExceptionDays = newExceptionDays.length > 0 ? newExceptionDays : [this.getNewEmptyException()];
@@ -152,7 +152,7 @@ export default class ExceptionsPage extends React.Component {
     }
 
     getAndSetProfileNames(callback) {
-        axios.get('/bell/schedule/profile/name').then(response => {
+        axios.get('/schedule/profile/name').then(response => {
             const profileNames = response.data;
             let newProfileNames = profileNames.slice();
             newProfileNames.push(ALL_PROFILES);
@@ -166,7 +166,7 @@ export default class ExceptionsPage extends React.Component {
     }
 
     deleteExceptionDaysOnServer(deletedExceptionDaysIds) {
-        axios.delete('/bell/exception-days', {
+        axios.delete('/exception-days', {
             headers: {'Content-Type': 'application/json'},
             data: JSON.stringify(deletedExceptionDaysIds)
         }).then(() => {
