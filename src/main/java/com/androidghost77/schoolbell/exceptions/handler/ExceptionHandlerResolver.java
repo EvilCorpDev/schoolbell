@@ -11,7 +11,9 @@ import com.androidghost77.schoolbell.exceptions.handler.dto.ExceptionMappingDeta
 import com.androidghost77.schoolbell.exceptions.handler.dto.ExceptionMessageDto;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @ControllerAdvice
 @RequiredArgsConstructor
 public class ExceptionHandlerResolver extends ResponseEntityExceptionHandler {
@@ -20,6 +22,7 @@ public class ExceptionHandlerResolver extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleExceptions(Exception exc, WebRequest request) {
+        log.error("Handling exception", exc);
         ExceptionMappingDetails mappingDetails = exceptionHandlingMapping.getOrDefault(exc.getClass());
         ExceptionMessageDto messageDto = new ExceptionMessageDto(mappingDetails.getShortMessage(),
                 mappingDetails.getMessageFun().apply(exc));

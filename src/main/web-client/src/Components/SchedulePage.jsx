@@ -8,11 +8,18 @@ import uuidv4 from "uuid/v4";
 import moment from "moment";
 import {BASE_64_PREFIX, getBase64} from '../utils'
 import Alert from 'react-s-alert'
+import axios from 'axios'
 import 'react-s-alert/dist/s-alert-default.css'
 import 'react-s-alert/dist/s-alert-css-effects/stackslide.css';
 
 export default class SchedulePage extends React.Component {
     static MIN_WIDTH_EXTENDED_SAVE = 1500;
+
+    ALERTS_PARAMS = {
+        position: 'top',
+        effect: 'stackslide',
+        timeout: 2000
+    };
 
     constructor(props) {
         super(props);
@@ -111,53 +118,50 @@ export default class SchedulePage extends React.Component {
     }
 
     getServerProfiles(openProfileId, callback) {
-        fetch("/bell/schedule/profile")
-            .then(res => res.json())
-            .then((profiles) => {
-                    const newProfiles = profiles.length > 0 ? profiles : [this.getNewEmptyProfile()];
-                    const openProfilePredicate = openProfileId ?
-                        profile => profile.id === openProfileId : profile => profile.active;
-                    let openProfile = profiles.find(openProfilePredicate);
-                    openProfile = openProfile ? openProfile : newProfiles[0];
-                    this.setState({
-                        profiles: newProfiles,
-                        openProfile: openProfile,
-                        timerIsOn: profiles.length > 0
-                    }, callback);
-                }
-            );
+        axios.get('/bell/schedule/profile').then(response => {
+            const profiles = response.data;
+            const newProfiles = profiles.length > 0 ? profiles : [this.getNewEmptyProfile()];
+            const openProfilePredicate = openProfileId ?
+                profile => profile.id === openProfileId : profile => profile.active;
+            let openProfile = profiles.find(openProfilePredicate);
+            openProfile = openProfile ? openProfile : newProfiles[0];
+            this.setState({
+                profiles: newProfiles,
+                openProfile: openProfile,
+                timerIsOn: profiles.length > 0
+            }, callback);
+        }).catch(error => {
+            console.log(error.response);
+            Alert.error('Помилка отримання данних від серверу', this.ALERTS_PARAMS);
+        });
     }
 
-    deleteProfiles(deletedProfilesIds, cb) {
-        fetch('/bell/schedule/profile', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(deletedProfilesIds)
-        })
-            .then(() => {
-                this.setState({
-                    deletedProfilesIds: []
-                }, cb)
-            })
-            .catch(error => console.error(error))
+    deleteProfiles(deletedProfileIds, cb) {
+        axios.delete('/bell/schedule/profile', {
+            headers: {'Content-Type': 'application/json'},
+            data: JSON.stringify(deletedProfileIds)
+        }).then(() => {
+            this.setState({
+                deletedProfileIds: []
+            }, cb)
+        }).catch(error => {
+            const message = error.response.data.shortMessage;
+            Alert.error('Помилка видалення профілю: ' + message, this.ALERTS_PARAMS);
+        });
     }
 
-    deleteScheduleItems(deletedScheduleItemsIds, cb) {
-        fetch('/bell/schedule/profile/bells', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(deletedScheduleItemsIds)
-        })
-            .then(() => {
-                this.setState({
-                    deletedScheduledItemsIds: []
-                }, cb)
-            })
-            .catch(error => console.error(error))
+    deleteScheduleItems(deletedScheduledItemsIds, cb) {
+        axios.delete('/bell/schedule/profile/bells', {
+            headers: {'Content-Type': 'application/json'},
+            data: JSON.stringify(deletedScheduledItemsIds)
+        }).then(() => {
+            this.setState({
+                deletedScheduledItemsIds: []
+            }, cb)
+        }).catch(error => {
+            const message = error.response.data.shortMessage;
+            Alert.error('Помилка видалення дзвінка: ' + message, this.ALERTS_PARAMS);
+        });
     }
 
     addNewScheduleItem = ev => {
@@ -279,21 +283,15 @@ export default class SchedulePage extends React.Component {
             this.deleteScheduleItems(deletedScheduledItemsIds);
         }
 
-        fetch('/bell/schedule/profile', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newProfiles)
-        })
-            .then(() => {
-                this.getServerProfiles(openProfile.id,
-                    () => Alert.success('Збережено', {position: 'top', effect: 'stackslide', timeout: 1300}));
-            })
-            .catch(error => {
-                console.error(error);
-                Alert.error('Помилка збереження', {position: 'top', effect: 'stackslide', timeout: 1000})
-            })
+        axios.post('/bell/schedule/profile', JSON.stringify(newProfiles), {
+            headers: {'Content-Type': 'application/json'}
+        }).then(() => {
+            this.getServerProfiles(openProfile.id,
+                () => Alert.success('Збережено', this.ALERTS_PARAMS));
+        }).catch(error => {
+            const message = error.response.data.shortMessage;
+            Alert.error('Помилка збереження: ' + message, this.ALERTS_PARAMS);
+        });
     };
 
     handleStartSecondChange = ev => {

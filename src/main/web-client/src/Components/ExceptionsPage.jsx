@@ -6,10 +6,17 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faPlus, faSave} from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment'
 import Alert from 'react-s-alert'
+import axios from 'axios'
 import 'react-s-alert/dist/s-alert-default.css'
 import 'react-s-alert/dist/s-alert-css-effects/stackslide.css';
 
 export default class ExceptionsPage extends React.Component {
+
+    ALERTS_PARAMS = {
+        position: 'top',
+        effect: 'stackslide',
+        timeout: 2000
+    };
 
     constructor(props) {
         super(props);
@@ -118,64 +125,58 @@ export default class ExceptionsPage extends React.Component {
             this.deleteExceptionDaysOnServer(deletedExceptions);
         }
 
-        fetch('/bell/exception-days', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(exceptions)
-        })
-            .then(() => {
-                this.getAndSetExceptionDays(
-                    () => Alert.success('Збережено', {position: 'top', effect: 'stackslide', timeout: 1300})
-                );
-            })
-            .catch(error => {
-                console.error(error);
-                Alert.error('Помилка збереження', {position: 'top', effect: 'stackslide', timeout: 1000})
-            })
+        axios.post('/bell/exception-days', JSON.stringify(exceptions), {
+            headers: {'Content-Type': 'application/json'}
+        }).then(() => {
+            this.getAndSetExceptionDays(
+                () => Alert.success('Збережено', this.ALERTS_PARAMS)
+            );
+        }).catch(error => {
+            const message = error.response.data.shortMessage;
+            Alert.error('Помилка збереження виключень:' + message, this.ALERTS_PARAMS)
+        });
     };
 
     getAndSetExceptionDays(callback) {
-        fetch("/bell/exception-days")
-            .then(res => res.json())
-            .then((exceptionDays) => {
-                    let newExceptionDays = exceptionDays.slice();
-                    newExceptionDays = newExceptionDays.length > 0 ? newExceptionDays : [this.getNewEmptyException()];
-                    this.setState({
-                        exceptions: newExceptionDays
-                    }, callback);
-                }
-            );
+        axios.get('/bell/exception-days').then(response => {
+            const exceptionDays = response.data;
+            let newExceptionDays = exceptionDays.slice();
+            newExceptionDays = newExceptionDays.length > 0 ? newExceptionDays : [this.getNewEmptyException()];
+            this.setState({
+                exceptions: newExceptionDays
+            }, callback);
+        }).catch(error => {
+            console.log(error.response);
+            Alert.error('Помилка отримання данних від серверу', this.ALERTS_PARAMS);
+        });
     }
 
     getAndSetProfileNames(callback) {
-        fetch("/bell/schedule/profile/name")
-            .then(res => res.json())
-            .then((profileNames) => {
-                    let newProfileNames = profileNames.slice();
-                    newProfileNames.push(ALL_PROFILES);
-                    this.setState({
-                        profileNames: newProfileNames
-                    }, callback);
-                }
-            );
+        axios.get('/bell/schedule/profile/name').then(response => {
+            const profileNames = response.data;
+            let newProfileNames = profileNames.slice();
+            newProfileNames.push(ALL_PROFILES);
+            this.setState({
+                profileNames: newProfileNames
+            }, callback);
+        }).catch(error => {
+            console.log(error);
+            Alert.error('Помилка отримання назв профілів', this.ALERTS_PARAMS);
+        });
     }
 
     deleteExceptionDaysOnServer(deletedExceptionDaysIds) {
-        fetch('/bell/exception-days', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(deletedExceptionDaysIds)
-        })
-            .then(() => {
-                this.setState({
-                    deletedExceptions: []
-                })
+        axios.delete('/bell/exception-days', {
+            headers: {'Content-Type': 'application/json'},
+            data: JSON.stringify(deletedExceptionDaysIds)
+        }).then(() => {
+            this.setState({
+                deletedExceptions: []
             })
-            .catch(error => console.error(error))
+        }).catch(error => {
+            const message = error.response.data.shortMessage;
+            Alert.error('Помилка видалення виключень:' + message, this.ALERTS_PARAMS)
+        });
     }
 
     getNewEmptyException() {

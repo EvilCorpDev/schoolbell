@@ -29,8 +29,8 @@ public class RequestResponseLoggingFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         CachingHttpServletRequestWrapper requestWrapper = new CachingHttpServletRequestWrapper(request);
         logRequest(requestWrapper);
-        logResponse(requestWrapper, (HttpServletResponse) response);
         chain.doFilter(requestWrapper, response);
+        logResponse(requestWrapper, (HttpServletResponse) response);
     }
 
     private void logRequest(CachingHttpServletRequestWrapper request) {
@@ -79,9 +79,5 @@ public class RequestResponseLoggingFilter implements Filter {
         } else {
             return payload;
         }
-    }
-
-    public static void main(String[] args) {
-        System.out.println(hideBase64Content("daspme, \"audioFile\":\"dasdadadadadad\", }"));
     }
 }

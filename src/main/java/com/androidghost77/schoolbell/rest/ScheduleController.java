@@ -44,18 +44,21 @@ public class ScheduleController {
     }
 
     @PostMapping("/profile")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void saveProfileSchedule(@RequestBody List<ProfileScheduleDto> newProfileSchedule) {
         profileScheduleService.saveProfilesSchedule(newProfileSchedule);
         schedulerService.startScheduling(true);
     }
 
     @DeleteMapping("/profile")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProfiles(@RequestBody List<String> profileIds) {
         profileScheduleService.deleteProfiles(profileIds);
         schedulerService.startScheduling(true);
     }
 
     @DeleteMapping("/profile/bells")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteScheduleItems(@RequestBody List<String> scheduleItemsIds) {
         profileScheduleService.deleteScheduleItems(scheduleItemsIds);
         schedulerService.startScheduling(true);
