@@ -1,5 +1,5 @@
 server:
-  port: 80
+  port: 9000
   servlet:
     session:
       timeout: 15m
@@ -16,12 +16,12 @@ spring:
       ddl-auto: update
   h2:
     console:
-      enabled: false
+      enabled: true
   jackson:
     default-property-inclusion: non_null
   output:
-      ansi:
-          enabled: detect
+    ansi:
+      enabled: detect
 management:
   endpoints:
     web:
