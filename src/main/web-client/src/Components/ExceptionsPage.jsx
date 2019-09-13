@@ -1,7 +1,7 @@
 import React from 'react'
 import uuidv4 from "uuid/v4"
 import ExceptionItem from './Exceptions/ExceptionItem/'
-import {ALL_PROFILES, EXCEPTION_ITEM_PREFIX} from '../utils'
+import {ALERTS_PARAMS, ALL_PROFILES, EXCEPTION_ITEM_PREFIX} from '../utils'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faPlus, faSave} from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment'
@@ -11,12 +11,6 @@ import 'react-s-alert/dist/s-alert-default.css'
 import 'react-s-alert/dist/s-alert-css-effects/stackslide.css';
 
 export default class ExceptionsPage extends React.Component {
-
-    ALERTS_PARAMS = {
-        position: 'top',
-        effect: 'stackslide',
-        timeout: 2000
-    };
 
     constructor(props) {
         super(props);
@@ -129,11 +123,11 @@ export default class ExceptionsPage extends React.Component {
             headers: {'Content-Type': 'application/json'}
         }).then(() => {
             this.getAndSetExceptionDays(
-                () => Alert.success('Збережено', this.ALERTS_PARAMS)
+                () => Alert.success('Збережено', ALERTS_PARAMS)
             );
         }).catch(error => {
             const message = error.response.data.shortMessage;
-            Alert.error('Помилка збереження виключень:' + message, this.ALERTS_PARAMS)
+            Alert.error('Помилка збереження виключень:' + message, ALERTS_PARAMS)
         });
     };
 
@@ -147,7 +141,7 @@ export default class ExceptionsPage extends React.Component {
             }, callback);
         }).catch(error => {
             console.log(error.response);
-            Alert.error('Помилка отримання данних від серверу', this.ALERTS_PARAMS);
+            Alert.error('Помилка отримання данних від серверу', ALERTS_PARAMS);
         });
     }
 
@@ -161,7 +155,7 @@ export default class ExceptionsPage extends React.Component {
             }, callback);
         }).catch(error => {
             console.log(error);
-            Alert.error('Помилка отримання назв профілів', this.ALERTS_PARAMS);
+            Alert.error('Помилка отримання назв профілів', ALERTS_PARAMS);
         });
     }
 
@@ -175,7 +169,7 @@ export default class ExceptionsPage extends React.Component {
             })
         }).catch(error => {
             const message = error.response.data.shortMessage;
-            Alert.error('Помилка видалення виключень:' + message, this.ALERTS_PARAMS)
+            Alert.error('Помилка видалення виключень:' + message, ALERTS_PARAMS)
         });
     }
 

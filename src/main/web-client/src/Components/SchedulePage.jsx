@@ -6,7 +6,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus, faSave} from "@fortawesome/free-solid-svg-icons";
 import uuidv4 from "uuid/v4";
 import moment from "moment";
-import {BASE_64_PREFIX, getBase64} from '../utils'
+import {ALERTS_PARAMS, BASE_64_PREFIX, getBase64} from '../utils'
 import Alert from 'react-s-alert'
 import axios from 'axios'
 import 'react-s-alert/dist/s-alert-default.css'
@@ -14,12 +14,6 @@ import 'react-s-alert/dist/s-alert-css-effects/stackslide.css';
 
 export default class SchedulePage extends React.Component {
     static MIN_WIDTH_EXTENDED_SAVE = 1500;
-
-    ALERTS_PARAMS = {
-        position: 'top',
-        effect: 'stackslide',
-        timeout: 2000
-    };
 
     constructor(props) {
         super(props);
@@ -132,7 +126,7 @@ export default class SchedulePage extends React.Component {
             }, callback);
         }).catch(error => {
             console.log(error.response);
-            Alert.error('Помилка отримання данних від серверу', this.ALERTS_PARAMS);
+            Alert.error('Помилка отримання данних від серверу', ALERTS_PARAMS);
         });
     }
 
@@ -146,7 +140,7 @@ export default class SchedulePage extends React.Component {
             }, cb)
         }).catch(error => {
             const message = error.response.data.shortMessage;
-            Alert.error('Помилка видалення профілю: ' + message, this.ALERTS_PARAMS);
+            Alert.error('Помилка видалення профілю: ' + message, ALERTS_PARAMS);
         });
     }
 
@@ -160,7 +154,7 @@ export default class SchedulePage extends React.Component {
             }, cb)
         }).catch(error => {
             const message = error.response.data.shortMessage;
-            Alert.error('Помилка видалення дзвінка: ' + message, this.ALERTS_PARAMS);
+            Alert.error('Помилка видалення дзвінка: ' + message, ALERTS_PARAMS);
         });
     }
 
@@ -287,10 +281,10 @@ export default class SchedulePage extends React.Component {
             headers: {'Content-Type': 'application/json'}
         }).then(() => {
             this.getServerProfiles(openProfile.id,
-                () => Alert.success('Збережено', this.ALERTS_PARAMS));
+                () => Alert.success('Збережено', ALERTS_PARAMS));
         }).catch(error => {
             const message = error.response.data.shortMessage;
-            Alert.error('Помилка збереження: ' + message, this.ALERTS_PARAMS);
+            Alert.error('Помилка збереження: ' + message, ALERTS_PARAMS);
         });
     };
 

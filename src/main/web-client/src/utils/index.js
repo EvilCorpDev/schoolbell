@@ -19,6 +19,12 @@ export const JUMBOTRON_INFO = {
     }
 };
 
+export const ALERTS_PARAMS = {
+    position: 'top',
+    effect: 'stackslide',
+    timeout: 2000
+};
+
 export const getPageName = pathName => {
     if (pathName === '/') {
         return PAGES.schedulePage;

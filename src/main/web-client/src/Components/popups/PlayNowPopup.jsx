@@ -1,6 +1,10 @@
 import React from 'react'
-import AudioSelector from "../Bells/AudioSelector";
-import {BASE_64_PREFIX, getBase64} from '../../utils'
+import AudioSelector from '../Bells/AudioSelector'
+import {ALERTS_PARAMS, BASE_64_PREFIX, getBase64} from '../../utils'
+import axios from 'axios'
+import Alert from 'react-s-alert'
+import 'react-s-alert/dist/s-alert-default.css'
+import 'react-s-alert/dist/s-alert-css-effects/stackslide.css';
 
 export default class PlayNowPopup extends React.Component {
 
@@ -47,6 +51,7 @@ export default class PlayNowPopup extends React.Component {
                         </div>
                     </div>
                 </div>
+                <Alert stack={{limit: 3}}/>
             </div>
         );
     }
@@ -77,12 +82,11 @@ export default class PlayNowPopup extends React.Component {
     };
 
     handleClosePopup = ev => {
-        fetch('/bell/play', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(this.state)
-        }).catch(error => console.error(error))
+        axios.post('/play', JSON.stringify(this.state), {
+            headers: {'Content-Type': 'application/json',}
+        }).catch(error => {
+            const message = error.response.data.message;
+            Alert.error("Сталася помилка:" + message, ALERTS_PARAMS);
+        });
     }
 }
