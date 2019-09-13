@@ -21,8 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @SpringBootApplication(exclude = {
-        SecurityAutoConfiguration.class,
-        SecurityFilterAutoConfiguration.class,
         ThymeleafAutoConfiguration.class,
         UserDetailsServiceAutoConfiguration.class})
 public class BellSchedulerApp extends Application {
