@@ -2,6 +2,8 @@ package com.androidghost77.schoolbell.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.provisioning.UserDetailsManager;
 
 import com.androidghost77.schoolbell.dto.ExceptionItemDto;
 import com.androidghost77.schoolbell.dto.ScheduleItemDto;
@@ -13,8 +15,10 @@ import com.androidghost77.schoolbell.mapper.ScheduleMapper;
 import com.androidghost77.schoolbell.repo.ExceptionDayRepo;
 import com.androidghost77.schoolbell.repo.ProfileRepo;
 import com.androidghost77.schoolbell.repo.ScheduleRepo;
+import com.androidghost77.schoolbell.repo.UserRepo;
 import com.androidghost77.schoolbell.schedule.BellScheduler;
 import com.androidghost77.schoolbell.schedule.Scheduler;
+import com.androidghost77.schoolbell.security.DbUserDetailsManager;
 import com.androidghost77.schoolbell.service.ExceptionsService;
 import com.androidghost77.schoolbell.service.ProfileScheduleService;
 import com.androidghost77.schoolbell.service.SchedulerService;
@@ -66,5 +70,15 @@ public class AppConfig {
     @Bean
     public RequestResponseLoggingFilter requestResponseLoggingFilter() {
         return new RequestResponseLoggingFilter();
+    }
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public UserDetailsManager userDetailsManager(UserRepo userRepo, BCryptPasswordEncoder passwordEncoder) {
+        return new DbUserDetailsManager(userRepo, passwordEncoder);
     }
 }

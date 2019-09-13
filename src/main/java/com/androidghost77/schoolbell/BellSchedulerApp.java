@@ -8,11 +8,10 @@ import javax.imageio.ImageIO;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -20,6 +19,7 @@ import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@EnableWebSecurity
 @SpringBootApplication(exclude = {
         ThymeleafAutoConfiguration.class,
         UserDetailsServiceAutoConfiguration.class})
