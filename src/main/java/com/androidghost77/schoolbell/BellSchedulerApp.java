@@ -3,6 +3,7 @@ package com.androidghost77.schoolbell;
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import javax.imageio.ImageIO;
 
@@ -57,7 +58,7 @@ public class BellSchedulerApp extends Application {
             TrayIcon trayIcon = new TrayIcon(image);
             trayIcon.setImageAutoSize(true);
 
-            MenuItem exitItem = new MenuItem("Вихiд");
+            MenuItem exitItem = new MenuItem(new String("Вихід".getBytes(), StandardCharsets.UTF_8));
             exitItem.addActionListener(event -> {
                 Platform.exit();
                 tray.remove(trayIcon);

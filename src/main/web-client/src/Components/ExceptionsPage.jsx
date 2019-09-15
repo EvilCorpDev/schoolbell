@@ -120,7 +120,7 @@ export default class ExceptionsPage extends React.Component {
         }
 
         axios.post('/exception-days', JSON.stringify(exceptions), {
-            headers: {'Content-Type': 'application/json'}
+            headers: {'Content-Type': 'application/json; charset=utf-8'}
         }).then(() => {
             this.getAndSetExceptionDays(
                 () => Alert.success('Збережено', ALERTS_PARAMS)
@@ -161,7 +161,7 @@ export default class ExceptionsPage extends React.Component {
 
     deleteExceptionDaysOnServer(deletedExceptionDaysIds) {
         axios.delete('/exception-days', {
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Content-Type': 'application/json; charset=utf-8'},
             data: JSON.stringify(deletedExceptionDaysIds)
         }).then(() => {
             this.setState({

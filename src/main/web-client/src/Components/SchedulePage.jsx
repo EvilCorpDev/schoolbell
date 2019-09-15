@@ -132,7 +132,7 @@ export default class SchedulePage extends React.Component {
 
     deleteProfiles(deletedProfileIds, cb) {
         axios.delete('/schedule/profile', {
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Content-Type': 'application/json; charset=utf-8'},
             data: JSON.stringify(deletedProfileIds)
         }).then(() => {
             this.setState({
@@ -146,7 +146,7 @@ export default class SchedulePage extends React.Component {
 
     deleteScheduleItems(deletedScheduledItemsIds, cb) {
         axios.delete('/schedule/profile/bells', {
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Content-Type': 'application/json; charset=utf-8'},
             data: JSON.stringify(deletedScheduledItemsIds)
         }).then(() => {
             this.setState({
@@ -278,7 +278,7 @@ export default class SchedulePage extends React.Component {
         }
 
         axios.post('/schedule/profile', JSON.stringify(newProfiles), {
-            headers: {'Content-Type': 'application/json'}
+            headers: {'Content-Type': 'application/json; charset=utf-8'}
         }).then(() => {
             this.getServerProfiles(openProfile.id,
                 () => Alert.success('Збережено', ALERTS_PARAMS));
