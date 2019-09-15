@@ -69,6 +69,7 @@ public class ExceptionsServiceImpl implements ExceptionsService {
     }
 
     @Override
+    @Transactional
     public void deleteExceptionItemsByProfileNames(List<String> profileNames) {
         exceptionDayRepo.deleteAllByProfileName(profileNames);
     }
