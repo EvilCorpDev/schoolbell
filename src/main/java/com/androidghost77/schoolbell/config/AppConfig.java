@@ -1,5 +1,6 @@
 package com.androidghost77.schoolbell.config;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,6 +28,9 @@ import com.androidghost77.schoolbell.service.impl.ProfileScheduleServiceImpl;
 import com.androidghost77.schoolbell.service.impl.SchedulerServiceImpl;
 import com.androidghost77.schoolbell.service.player.Player;
 import com.androidghost77.schoolbell.service.player.impl.AudioPlayer;
+import org.springframework.web.filter.CharacterEncodingFilter;
+
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class AppConfig {
@@ -80,5 +84,15 @@ public class AppConfig {
     @Bean
     public UserDetailsManager userDetailsManager(UserRepo userRepo, BCryptPasswordEncoder passwordEncoder) {
         return new DbUserDetailsManager(userRepo, passwordEncoder);
+    }
+
+    @Bean
+    public FilterRegistrationBean filterRegistrationBean() {
+        FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+        CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
+        characterEncodingFilter.setForceEncoding(true);
+        characterEncodingFilter.setEncoding(StandardCharsets.UTF_8.toString());
+        registrationBean.setFilter(characterEncodingFilter);
+        return registrationBean;
     }
 }

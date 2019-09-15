@@ -40,7 +40,7 @@ public class CachingHttpServletRequestWrapper extends HttpServletRequestWrapper 
 
     @Override
     public ServletInputStream getInputStream() throws IOException {
-        return new SimpleServletInputStream(new ByteArrayInputStream(payload.getBytes()));
+        return new SimpleServletInputStream(new ByteArrayInputStream(payload.getBytes(StandardCharsets.UTF_8)));
     }
 
     @RequiredArgsConstructor
