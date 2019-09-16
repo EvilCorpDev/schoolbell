@@ -25,7 +25,7 @@ For both UNIX and Windows you can run app with `java -jar school-bell-1.0-SNAPSH
 command or by simple double click on `school-bell-1.0-SNAPSHOT.jar` file.
 
 # After app start
-When app started go to `localhost` for web UI, or if you run app with `-Dspring.profiles.active=dev` VM option -> `localhost:9000'
+When app started go to `localhost` for web UI, or if you run app with `-Dspring.profiles.active=dev` VM option -> `localhost:9000`
 Default login/password: admin/nimda
 
 # Develop mode
