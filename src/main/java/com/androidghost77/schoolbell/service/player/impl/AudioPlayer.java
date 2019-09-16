@@ -19,8 +19,15 @@ public class AudioPlayer implements Player {
 
     private MediaPlayer mediaPlayer;
 
+    @Override
     public void play(String fileName, long startSec, Long duration) {
         Media hit = new Media(new File(fileName).toURI().toString());
+        playMedia(startSec, duration, hit, null);
+    }
+
+    @Override
+    public void playUri(String uri, long startSec, Long duration) {
+        Media hit = new Media(uri);
         playMedia(startSec, duration, hit, null);
     }
 

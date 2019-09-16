@@ -12,6 +12,8 @@ public final class Util {
     private static final String WINDOWS_AUTORUN_PATH = "C:\\Users\\%s\\AppData\\Roaming\\Microsoft\\Windows" +
             "\\Start Menu\\Programs\\Startup\\bell-schedule.jar.lnk";
 
+    public static final String DEFAULT_AUDIO_FILE = "default_play_now.mp3";
+
     private Util() {
     }
 

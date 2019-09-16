@@ -46,7 +46,10 @@ export default class PlayNowPopup extends React.Component {
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-primary" data-dismiss="modal"
-                                    onClick={this.handleClosePopup}> Подзвонити
+                                    onClick={this.handleChosenBellPopup}> Обраний дзвінок
+                            </button>
+                            <button type="button" className="btn btn-info" data-dismiss="modal"
+                                    onClick={this.handleDefaultBellPopup}> Стандартний дзвінок
                             </button>
                         </div>
                     </div>
@@ -81,10 +84,17 @@ export default class PlayNowPopup extends React.Component {
         })
     };
 
-    handleClosePopup = ev => {
+    handleChosenBellPopup = ev => {
         axios.post('/play', JSON.stringify(this.state), {
             headers: {'Content-Type': 'application/json',}
         }).catch(error => {
+            const message = error.response.data.message;
+            Alert.error("Сталася помилка:" + message, ALERTS_PARAMS);
+        });
+    };
+
+    handleDefaultBellPopup = ev => {
+        axios.post('/play/default').catch(error => {
             const message = error.response.data.message;
             Alert.error("Сталася помилка:" + message, ALERTS_PARAMS);
         });
