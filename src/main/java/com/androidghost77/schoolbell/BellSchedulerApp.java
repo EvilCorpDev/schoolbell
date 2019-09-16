@@ -3,7 +3,6 @@ package com.androidghost77.schoolbell;
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
 import javax.imageio.ImageIO;
 
@@ -13,6 +12,8 @@ import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServic
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+
+import com.androidghost77.schoolbell.menuitem.AutorunItems;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -27,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class BellSchedulerApp extends Application {
 
     private static final String TRAY_ICON_PNG = "trayicon.png";
+    private static final String OS = System.getProperty("os.name").toLowerCase();
 
     private static String[] args;
     private static ConfigurableApplicationContext ctx;
@@ -58,8 +60,8 @@ public class BellSchedulerApp extends Application {
             TrayIcon trayIcon = new TrayIcon(image);
             trayIcon.setImageAutoSize(true);
 
-            MenuItem exitItem = new MenuItem(new String("Вихід".getBytes(), StandardCharsets.UTF_8));
-            exitItem.addActionListener(event -> {
+            MenuItem exitItem = new MenuItem("Вихід");
+            exitItem.addActionListener(listener -> {
                 Platform.exit();
                 tray.remove(trayIcon);
                 int exitCode = SpringApplication.exit(ctx, () -> 0);
@@ -68,6 +70,10 @@ public class BellSchedulerApp extends Application {
 
             // setup the popup menu for the application.
             final PopupMenu popup = new PopupMenu();
+            if (isWindows()) {
+                popup.add(AutorunItems.createAutorunItem("Додати до автозапуску", 1, popup));
+                popup.add(AutorunItems.removeAutorunItem("Вилучити з автозапуску", 0, popup));
+            }
             popup.add(exitItem);
             trayIcon.setPopupMenu(popup);
 
@@ -76,6 +82,10 @@ public class BellSchedulerApp extends Application {
         } catch (AWTException | IOException e) {
             log.warn("Unable to init system tray", e);
         }
+    }
+
+    private static boolean isWindows() {
+        return OS.contains("win");
     }
 
 }

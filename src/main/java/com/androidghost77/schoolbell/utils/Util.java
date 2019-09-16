@@ -9,8 +9,15 @@ public final class Util {
 
     private static final String AUDIO_PATH = "./audio";
     private static final String AUDIO_PATH_TEMPLATE = "%s/%s";
+    private static final String WINDOWS_AUTORUN_PATH = "C:\\Users\\%s\\AppData\\Roaming\\Microsoft\\Windows" +
+            "\\Start Menu\\Programs\\Startup\\bell-schedule.jar.lnk";
 
     private Util() {
+    }
+
+    public static String getWindowsAutorunPath() {
+        String userName = System.getProperty("user.name");
+        return String.format(WINDOWS_AUTORUN_PATH, userName);
     }
 
     public static String getFilePath(String fileName) {
