@@ -11,7 +11,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.NaturalId;
 import org.springframework.data.domain.Persistable;
 
 import lombok.Data;
@@ -24,7 +23,6 @@ public class Profile implements Persistable<String>, Serializable {
     @Id
     private String id;
 
-    @NaturalId
     @Column(name = "name", unique = true)
     private String name;
 

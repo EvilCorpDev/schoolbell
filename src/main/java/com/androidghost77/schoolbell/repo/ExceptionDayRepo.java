@@ -21,11 +21,6 @@ public interface ExceptionDayRepo extends JpaRepository<ExceptionDay, String> {
     void deleteAllById(@Param("ids") List<String> exceptionDayIds);
 
     @Modifying
-    @Query("DELETE FROM ExceptionDay WHERE profileName in :profileNames")
+    @Query("DELETE FROM ExceptionDay WHERE profile_name in :profileNames")
     void deleteAllByProfileName(@Param("profileNames") List<String> profileNames);
-
-    @Modifying
-    @Query("DELETE FROM ExceptionDay ed WHERE profile_name in " +
-            "(SELECT ed.profile.name from ExceptionDay ed join ed.profile p where p.id in :profileIds)")
-    void deleteAllByProfileId(@Param("profileIds") List<String> profileIds);
 }

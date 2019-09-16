@@ -97,8 +97,12 @@ public class ProfileScheduleServiceImpl implements ProfileScheduleService {
     @Override
     @Transactional
     public void deleteProfiles(List<String> profileIds) {
+        List<String> profileNames = profileRepo.findAllById(profileIds)
+                .stream()
+                .map(Profile::getName)
+                .collect(toList());
+        exceptionDayRepo.deleteAllByProfileName(profileNames);
         scheduleRepo.deleteAllByProfileId(profileIds);
-        exceptionDayRepo.deleteAllByProfileId(profileIds);
         profileRepo.deleteAllById(profileIds);
     }
 
