@@ -66,6 +66,7 @@ public class AudioPlayer implements Player {
         });
     }
 
+    @Override
     public void stop() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
