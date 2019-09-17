@@ -1,7 +1,8 @@
 import React from 'react'
-import TabHeader from "./Tabs/TabHeader";
-import TabLeftColumn from "./Tabs/TabLeftColumn";
-import TabRightColumn from "./Tabs/TabRightColumn";
+import TabHeader from './Tabs/TabHeader'
+import TabLeftColumn from './Tabs/TabLeftColumn'
+import TabRightColumn from './Tabs/TabRightColumn'
+import LoginPopup from './popups/LoginPopup/'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus, faSave} from "@fortawesome/free-solid-svg-icons";
 import uuidv4 from "uuid/v4";
@@ -101,6 +102,9 @@ export default class SchedulePage extends React.Component {
                             <FontAwesomeIcon icon={faSave} size="2x"/> {saveClass === "" ? "Зберегти" : ""}
                         </button>
                     </div>
+                    <LoginPopup popupId="loginPopup" />
+                    <button className="btn d-none" data-toggle="modal" data-target="#loginPopup"
+                            ref={btn => this.loginBtn = btn}/>
                     <Alert stack={{limit: 3}}/>
                 </div>
             </div>
@@ -125,6 +129,9 @@ export default class SchedulePage extends React.Component {
                 timerIsOn: profiles.length > 0
             }, callback);
         }).catch(error => {
+            if(error.response.status === 401) {
+                this.loginBtn.click();
+            }
             console.log(error.response);
             Alert.error('Помилка отримання данних від серверу', ALERTS_PARAMS);
         });

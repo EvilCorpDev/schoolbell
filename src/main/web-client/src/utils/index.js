@@ -5,7 +5,8 @@ export const ALL_PROFILES = 'Всі профілі';
 
 export const PAGES = {
     schedulePage: 'schedulePage',
-    exceptionsPage: 'exceptionsPage'
+    exceptionsPage: 'exceptionsPage',
+    notFoundPage: 'notFoundPage'
 };
 
 export const JUMBOTRON_INFO = {
@@ -26,12 +27,14 @@ export const ALERTS_PARAMS = {
 };
 
 export const getPageName = pathName => {
-    if (pathName === '/') {
-        return PAGES.schedulePage;
-    } else if (pathName === '/exceptions') {
-        return PAGES.exceptionsPage;
+    switch (pathName) {
+        case '/':
+            return PAGES.schedulePage;
+        case '/exceptions':
+            return PAGES.exceptionsPage;
+        default:
+            return PAGES.notFoundPage;
     }
-    return undefined;
 };
 
 export const getBase64 = (file, callback) => {
