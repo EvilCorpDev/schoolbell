@@ -1,6 +1,7 @@
 import React from 'react'
 import uuidv4 from "uuid/v4"
 import ExceptionItem from './Exceptions/ExceptionItem/'
+import LoginPopup from './popups/LoginPopup/'
 import {ALERTS_PARAMS, ALL_PROFILES, EXCEPTION_ITEM_PREFIX} from '../utils'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faPlus, faSave} from '@fortawesome/free-solid-svg-icons'
@@ -18,13 +19,15 @@ export default class ExceptionsPage extends React.Component {
         this.state = {
             exceptions: [],
             profileNames: [],
-            deletedExceptions: []
+            deletedExceptions: [],
+            unauthorizedAction: undefined
         };
 
         this.handleRemoveExceptionItem = this.handleRemoveExceptionItem.bind(this);
         this.handleCalendarClick = this.handleCalendarClick.bind(this);
         this.handleWeekDayClick = this.handleWeekDayClick.bind(this);
         this.handleSelectProfile = this.handleSelectProfile.bind(this);
+        this.handleUnauthorizedAction = this.handleUnauthorizedAction.bind(this);
     }
 
     componentDidMount() {
@@ -62,6 +65,9 @@ export default class ExceptionsPage extends React.Component {
                         </button>
                     </div>
                 </div>
+                <LoginPopup popupId="loginPopup" handleCallback={this.handleUnauthorizedAction}/>
+                <button className="btn d-none" data-toggle="modal" data-target="#loginPopup"
+                        ref={btn => this.loginBtn = btn}/>
                 <Alert stack={{limit: 3}}/>
             </div>
         )
@@ -119,20 +125,36 @@ export default class ExceptionsPage extends React.Component {
             this.deleteExceptionDaysOnServer(deletedExceptions);
         }
 
-        axios.post('/exception-days', JSON.stringify(exceptions), {
-            headers: {'Content-Type': 'application/json; charset=utf-8'}
+        axios.post('/api/exception-days', JSON.stringify(exceptions), {
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': "Bearer " + sessionStorage.getItem('jwtToken')
+            }
         }).then(() => {
             this.getAndSetExceptionDays(
                 () => Alert.success('Збережено', ALERTS_PARAMS)
             );
         }).catch(error => {
+            this.showLoginPopup(error, () => this.handleSaveAllExceptions(ev));
             const message = error.response.data.shortMessage;
             Alert.error('Помилка збереження виключень:' + message, ALERTS_PARAMS)
         });
     };
 
+    handleUnauthorizedAction() {
+        const {unauthorizedAction} = this.state;
+        if (unauthorizedAction) {
+            unauthorizedAction();
+        }
+        this.setState({
+            unauthorizedAction: undefined
+        })
+    }
+
     getAndSetExceptionDays(callback) {
-        axios.get('/exception-days').then(response => {
+        axios.get('/api/exception-days', {
+            headers: {'Authorization': "Bearer " + sessionStorage.getItem('jwtToken')}
+        }).then(response => {
             const exceptionDays = response.data;
             let newExceptionDays = exceptionDays.slice();
             newExceptionDays = newExceptionDays.length > 0 ? newExceptionDays : [this.getNewEmptyException()];
@@ -140,13 +162,16 @@ export default class ExceptionsPage extends React.Component {
                 exceptions: newExceptionDays
             }, callback);
         }).catch(error => {
+            this.showLoginPopup(error, () => this.getAndSetExceptionDays(callback));
             console.log(error.response);
             Alert.error('Помилка отримання данних від серверу', ALERTS_PARAMS);
         });
     }
 
     getAndSetProfileNames(callback) {
-        axios.get('/schedule/profile/name').then(response => {
+        axios.get('/api/schedule/profile/name', {
+            headers: {'Authorization': "Bearer " + sessionStorage.getItem('jwtToken')}
+        }).then(response => {
             const profileNames = response.data;
             let newProfileNames = profileNames.slice();
             newProfileNames.push(ALL_PROFILES);
@@ -154,20 +179,25 @@ export default class ExceptionsPage extends React.Component {
                 profileNames: newProfileNames
             }, callback);
         }).catch(error => {
+            this.showLoginPopup(error, () => this.getAndSetProfileNames());
             console.log(error);
             Alert.error('Помилка отримання назв профілів', ALERTS_PARAMS);
         });
     }
 
     deleteExceptionDaysOnServer(deletedExceptionDaysIds) {
-        axios.delete('/exception-days', {
-            headers: {'Content-Type': 'application/json; charset=utf-8'},
+        axios.delete('/api/exception-days', {
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': "Bearer " + sessionStorage.getItem('jwtToken')
+            },
             data: JSON.stringify(deletedExceptionDaysIds)
         }).then(() => {
             this.setState({
                 deletedExceptions: []
             })
         }).catch(error => {
+            this.showLoginPopup(error, () => this.deleteExceptionDaysOnServer(deletedExceptionDaysIds));
             const message = error.response.data.shortMessage;
             Alert.error('Помилка видалення виключень:' + message, ALERTS_PARAMS)
         });
@@ -191,5 +221,12 @@ export default class ExceptionsPage extends React.Component {
         }
 
         return newExceptions;
+    }
+
+    showLoginPopup(error, unauthorizedAction) {
+        if (error.response.status === 401) {
+            this.loginBtn.click();
+            this.setState({unauthorizedAction: unauthorizedAction});
+        }
     }
 }
