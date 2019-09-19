@@ -36,3 +36,8 @@ logging:
     org.springframework.web: info
   file: "./logs/bell-schedule.log"
   file.max-history: 7
+bell:
+  schedule:
+    jwt:
+      secret: "Rl7$u!&0k7Fb"
+      expirationInMs: 1800000

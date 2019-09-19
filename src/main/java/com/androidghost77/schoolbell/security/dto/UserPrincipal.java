@@ -7,8 +7,6 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,9 +16,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserPrincipal implements UserDetails {
 
-    @JsonProperty("username")
+    private Long id;
     private String username;
-    @JsonProperty("password")
     private String password;
     private List<? extends GrantedAuthority> authorities = Collections.emptyList();
 

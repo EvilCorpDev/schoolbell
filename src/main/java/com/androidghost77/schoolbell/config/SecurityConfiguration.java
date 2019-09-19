@@ -1,35 +1,44 @@
 package com.androidghost77.schoolbell.config;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 
-import lombok.RequiredArgsConstructor;
+import com.androidghost77.schoolbell.repo.UserRepo;
+import com.androidghost77.schoolbell.security.DbUserDetailsManager;
+import com.androidghost77.schoolbell.security.JwtAuthenticationEntryPoint;
+import com.androidghost77.schoolbell.security.JwtTokenProvider;
+import com.androidghost77.schoolbell.security.filter.JwtAuthenticationFilter;
 
 @Configuration
-@RequiredArgsConstructor
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration {
 
-    private final UserDetailsService userDetailsService;
-    private final BCryptPasswordEncoder passwordEncoder;
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.httpBasic().and()
-                .authorizeRequests()
-                .antMatchers("/h2-console/**").permitAll()
-                .anyRequest().authenticated()
-                .and().headers().frameOptions().sameOrigin()
-                .and().csrf().disable();
+    @Bean
+    public DbUserDetailsManager userDetailsManager(UserRepo userRepo, BCryptPasswordEncoder passwordEncoder) {
+        return new DbUserDetailsManager(userRepo, passwordEncoder);
+    }
+
+    @Bean
+    public JwtTokenProvider tokenProvider(@Value("${bell.schedule.jwt.secret}") String jwtSecret,
+                                          @Value("${bell.schedule.jwt.expirationInMs}") int jwtExpirationInMs) {
+        return new JwtTokenProvider(jwtSecret, jwtExpirationInMs);
+    }
+
+    @Bean
+    public AuthenticationEntryPoint jwtAuthenticationEntryPoint() {
+        return new JwtAuthenticationEntryPoint();
+    }
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter(JwtTokenProvider tokenProvider,
+                                                           DbUserDetailsManager userDetailsManager) {
+        return new JwtAuthenticationFilter(tokenProvider, userDetailsManager);
     }
 }
