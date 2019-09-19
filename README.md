@@ -31,5 +31,5 @@ Default login/password: admin/nimda
 # Develop mode
 For developing mode:  
    a) Run `npm start` from `src/main/web-client`  
-   b) Run `.jar` file or start app from `Intellij` with VM option `-Dspring.profiles.active=dev` . 
+   b) Run `.jar` file or start app from `Intellij` with VM option `-Dspring.profiles.active=dev`  
 App will be available at `localhost:3000`
