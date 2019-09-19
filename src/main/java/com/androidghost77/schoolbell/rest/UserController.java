@@ -15,7 +15,7 @@ import com.androidghost77.schoolbell.security.dto.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
 

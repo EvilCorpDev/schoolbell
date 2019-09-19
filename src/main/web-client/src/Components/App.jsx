@@ -51,5 +51,5 @@ export default class App extends React.Component {
         this.setState({
             activePage: ev.target.id
         })
-    }
+    };
 }

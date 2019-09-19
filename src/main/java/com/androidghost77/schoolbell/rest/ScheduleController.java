@@ -21,7 +21,7 @@ import com.androidghost77.schoolbell.service.SchedulerService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/schedule")
+@RequestMapping("/api/schedule")
 @RequiredArgsConstructor
 public class ScheduleController {
 

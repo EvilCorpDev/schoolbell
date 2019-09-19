@@ -50,7 +50,7 @@ public class SecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/", "/favicon.ico", "/**/*.png", "/**/*.gif", "/**/*.svg", "/**/*.jpg",
                         "/**/*.html", "/**/*.css", "/**/*.js").permitAll()
-                .antMatchers("/auth/**")
+                .antMatchers("/api/auth/**")
                 .permitAll()
                 .antMatchers("/h2-console/**").permitAll()
                 .anyRequest()

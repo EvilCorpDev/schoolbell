@@ -85,7 +85,7 @@ export default class PlayNowPopup extends React.Component {
     };
 
     handleChosenBellPopup = ev => {
-        axios.post('/play', JSON.stringify(this.state), {
+        axios.post('/api/play', JSON.stringify(this.state), {
             headers: {'Content-Type': 'application/json',}
         }).catch(error => {
             const message = error.response.data.message;
@@ -94,7 +94,7 @@ export default class PlayNowPopup extends React.Component {
     };
 
     handleDefaultBellPopup = ev => {
-        axios.post('/play/default').catch(error => {
+        axios.post('/api/play/default').catch(error => {
             const message = error.response.data.message;
             Alert.error("Сталася помилка:" + message, ALERTS_PARAMS);
         });

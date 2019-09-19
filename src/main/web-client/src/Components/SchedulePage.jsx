@@ -30,7 +30,8 @@ export default class SchedulePage extends React.Component {
             deletedScheduledItemsIds: [],
             saveHover: false,
             width: 0,
-            height: 0
+            height: 0,
+            unauthorizedAction: undefined
         };
 
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
@@ -50,6 +51,7 @@ export default class SchedulePage extends React.Component {
         this.handleStartSecondChange = this.handleStartSecondChange.bind(this);
         this.handleDurationChange = this.handleDurationChange.bind(this);
         this.updateOpenProfileScheduledItemById = this.updateOpenProfileScheduledItemById.bind(this);
+        this.handleUnauthorizedAction = this.handleUnauthorizedAction.bind(this);
     }
 
     componentDidMount() {
@@ -102,7 +104,7 @@ export default class SchedulePage extends React.Component {
                             <FontAwesomeIcon icon={faSave} size="2x"/> {saveClass === "" ? "Зберегти" : ""}
                         </button>
                     </div>
-                    <LoginPopup popupId="loginPopup" />
+                    <LoginPopup popupId="loginPopup" handleCallback={this.handleUnauthorizedAction}/>
                     <button className="btn d-none" data-toggle="modal" data-target="#loginPopup"
                             ref={btn => this.loginBtn = btn}/>
                     <Alert stack={{limit: 3}}/>
@@ -116,7 +118,9 @@ export default class SchedulePage extends React.Component {
     }
 
     getServerProfiles(openProfileId, callback) {
-        axios.get('/schedule/profile').then(response => {
+        axios.get('/api/schedule/profile', {
+            headers: {'Authorization': "Bearer " + sessionStorage.getItem('jwtToken')}
+        }).then(response => {
             const profiles = response.data;
             const newProfiles = profiles.length > 0 ? profiles : [this.getNewEmptyProfile()];
             const openProfilePredicate = openProfileId ?
@@ -129,37 +133,43 @@ export default class SchedulePage extends React.Component {
                 timerIsOn: profiles.length > 0
             }, callback);
         }).catch(error => {
-            if(error.response.status === 401) {
-                this.loginBtn.click();
-            }
+            this.showLoginPopup(error, () => this.getServerProfiles(openProfileId, callback));
             console.log(error.response);
             Alert.error('Помилка отримання данних від серверу', ALERTS_PARAMS);
         });
     }
 
     deleteProfiles(deletedProfileIds, cb) {
-        axios.delete('/schedule/profile', {
-            headers: {'Content-Type': 'application/json; charset=utf-8'},
+        axios.delete('/api/schedule/profile', {
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': "Bearer " + sessionStorage.getItem('jwtToken')
+            },
             data: JSON.stringify(deletedProfileIds)
         }).then(() => {
             this.setState({
                 deletedProfileIds: []
             }, cb)
         }).catch(error => {
+            this.showLoginPopup(error, () => this.deleteProfiles(deletedProfileIds, cb));
             const message = error.response.data.shortMessage;
             Alert.error('Помилка видалення профілю: ' + message, ALERTS_PARAMS);
         });
     }
 
     deleteScheduleItems(deletedScheduledItemsIds, cb) {
-        axios.delete('/schedule/profile/bells', {
-            headers: {'Content-Type': 'application/json; charset=utf-8'},
+        axios.delete('/api/schedule/profile/bells', {
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': "Bearer " + sessionStorage.getItem('jwtToken')
+            },
             data: JSON.stringify(deletedScheduledItemsIds)
         }).then(() => {
             this.setState({
                 deletedScheduledItemsIds: []
             }, cb)
         }).catch(error => {
+            this.showLoginPopup(error, this.deleteScheduleItems(deletedScheduledItemsIds, cb));
             const message = error.response.data.shortMessage;
             Alert.error('Помилка видалення дзвінка: ' + message, ALERTS_PARAMS);
         });
@@ -284,12 +294,16 @@ export default class SchedulePage extends React.Component {
             this.deleteScheduleItems(deletedScheduledItemsIds);
         }
 
-        axios.post('/schedule/profile', JSON.stringify(newProfiles), {
-            headers: {'Content-Type': 'application/json; charset=utf-8'}
+        axios.post('/api/schedule/profile', JSON.stringify(newProfiles), {
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': "Bearer " + sessionStorage.getItem('jwtToken')
+            }
         }).then(() => {
             this.getServerProfiles(openProfile.id,
                 () => Alert.success('Збережено', ALERTS_PARAMS));
         }).catch(error => {
+            this.showLoginPopup(error, this.handleSaveAllProfiles(ev));
             const message = error.response.data.shortMessage;
             Alert.error('Помилка збереження: ' + message, ALERTS_PARAMS);
         });
@@ -351,6 +365,16 @@ export default class SchedulePage extends React.Component {
         });
     };
 
+    handleUnauthorizedAction() {
+        const {unauthorizedAction} = this.state;
+        if (unauthorizedAction) {
+            unauthorizedAction();
+        }
+        this.setState({
+            unauthorizedAction: undefined
+        })
+    }
+
     getTimerDistance() {
         const now = new Date();
         const scheduleItems = this.state.openProfile.scheduleItems.filter(item => item.time !== '');
@@ -387,6 +411,13 @@ export default class SchedulePage extends React.Component {
         const openProfileIndex = newProfiles.findIndex(profile => profile.id === openProfile.id);
         newProfiles[openProfileIndex] = openProfile;
         return newProfiles;
+    }
+
+    showLoginPopup(error, unauthorizedAction) {
+        if(error.response.status === 401) {
+            this.loginBtn.click();
+            this.setState({unauthorizedAction: unauthorizedAction});
+        }
     }
 
 }

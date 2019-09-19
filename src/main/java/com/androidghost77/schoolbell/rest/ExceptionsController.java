@@ -18,7 +18,7 @@ import com.androidghost77.schoolbell.service.SchedulerService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/exception-days")
+@RequestMapping("/api/exception-days")
 @RequiredArgsConstructor
 public class ExceptionsController {
 

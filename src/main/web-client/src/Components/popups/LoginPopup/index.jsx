@@ -9,7 +9,7 @@ import './style.css'
 export default class LoginPopup extends React.Component {
 
     state = {
-        login: '',
+        username: '',
         password: ''
     };
 
@@ -20,30 +20,30 @@ export default class LoginPopup extends React.Component {
                  aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered" role="document">
                     <div className="modal-content">
-                        <div className="modal-body">
-                            <h5 className="modal-title text-center mb-2 mt-2">Увійти на сайт</h5>
-                            <div className="row justify-content-center">
-                                <div className="col-6 mt-2 mb-2">
-                                    <input type="text" className="form-control" value={this.state.login}
-                                           autoComplete="off" placeholder="Введіть ім'я користувача"
-                                           onChange={this.handleLoginChanged}/>
+                        <form onSubmit={this.handleLogin}>
+                            <div className="modal-body form-group">
+                                <h5 className="modal-title text-center mb-2 mt-2">Увійти на сайт</h5>
+                                <div className="row justify-content-center">
+                                    <div className="col-6 mt-2 mb-2">
+                                        <input type="text" className="form-control" value={this.state.username}
+                                               autoComplete="off" placeholder="Введіть ім'я користувача" tabIndex="1"
+                                               onChange={this.handleLoginChanged}/>
+                                    </div>
+                                </div>
+                                <div className="row justify-content-center">
+                                    <div className="col-6 mt-2">
+                                        <input type="password" className="form-control" value={this.state.password}
+                                               autoComplete="off" placeholder="Введіть пароль" tabIndex="2"
+                                               onChange={this.handlePasswordChanged}/>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="row justify-content-center">
-                                <div className="col-6 mt-2 mb-4">
-                                    <input type="password" className="form-control" value={this.state.password}
-                                           autoComplete="off" placeholder="Введіть пароль"
-                                           onChange={this.handlePasswordChanged}/>
-                                </div>
+                            <div className="modal-footer justify-content-center">
+                                <button className="btn btn-primary">Вхід в систему</button>
+                                <button type="button" className="btn d-none" data-dismiss="modal"
+                                        ref={btn => this.dismissBtn = btn}/>
                             </div>
-                        </div>
-                        <div className="modal-footer justify-content-center">
-                            <button type="button" className="btn btn-primary" onClick={this.handleLogin}>
-                                Вхід в систему
-                            </button>
-                            <button type="button" className="btn d-none" data-dismiss="modal"
-                                    ref={btn => this.dismissBtn = btn} />
-                        </div>
+                        </form>
                     </div>
                 </div>
                 <Alert stack={{limit: 3}}/>
@@ -53,11 +53,17 @@ export default class LoginPopup extends React.Component {
 
     handleLogin = ev => {
         ev.preventDefault();
-        axios.post('/login', JSON.stringify(this.state), {
+        axios.post('/api/auth', JSON.stringify(this.state), {
             headers: {'Content-Type': 'application/json'}
-        }).then(() => {
+        }).then(response => {
             this.dismissBtn.click();
+            sessionStorage.setItem('jwtToken', response.data.token);
+            const {handleCallback} = this.props;
+            if (handleCallback) {
+                handleCallback();
+            }
         }).catch(error => {
+            console.log(error.response);
             const message = error.response.data.message;
             Alert.error("Сталася помилка:" + message, ALERTS_PARAMS);
         });
@@ -66,7 +72,7 @@ export default class LoginPopup extends React.Component {
     handleLoginChanged = ev => {
         ev.preventDefault();
         this.setState({
-            login: ev.target.value
+            username: ev.target.value
         })
     };
 
