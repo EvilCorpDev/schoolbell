@@ -3,7 +3,7 @@ import {PAGES} from '../utils'
 import {Link} from 'react-router-dom'
 
 export default function Navbar(props) {
-    const {handlePageClick, scheduleClass, exceptionsClass} = props;
+    const {handlePageClick, scheduleClass, exceptionsClass, usersClass} = props;
     return (
         <nav className="navbar navbar-expand-lg sticky-top navbar-dark bg-secondary mb-3">
             <div className="navbar-collapse" id="navbarNav">
@@ -16,6 +16,11 @@ export default function Navbar(props) {
                     <li className={"nav-item " + exceptionsClass}>
                         <Link id={PAGES.exceptionsPage} className="nav-link" to="exceptions" onClick={handlePageClick}>
                             Виняткові дні
+                        </Link>
+                    </li>
+                    <li className={"nav-item " + usersClass}>
+                        <Link id={PAGES.usersPage} className="nav-link" to="users-settings" onClick={handlePageClick}>
+                            Користувачі
                         </Link>
                     </li>
                 </ul>

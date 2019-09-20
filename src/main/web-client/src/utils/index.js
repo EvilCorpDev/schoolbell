@@ -1,11 +1,15 @@
 export const BASE_64_PREFIX = 'base64,';
 export const WEEK_DAY_ID_PREFIX = 'weekDay';
 export const EXCEPTION_ITEM_PREFIX = 'exceptionItem';
+export const USERNAME = 'username';
+export const PASSWORD = 'password';
+export const ROLE = 'role';
 export const ALL_PROFILES = 'Всі профілі';
 
 export const PAGES = {
     schedulePage: 'schedulePage',
     exceptionsPage: 'exceptionsPage',
+    usersPage: 'usersPage',
     notFoundPage: 'notFoundPage'
 };
 
@@ -17,6 +21,10 @@ export const JUMBOTRON_INFO = {
     exceptionsPage: {
         header: 'Виняткові дні',
         description: 'Тут можна налаштувати дні, коли розклад не працюватиме'
+    },
+    usersPage: {
+        header: 'Налаштування користувачів',
+        description: 'Тут можна налаштувати користувачів'
     }
 };
 
@@ -32,6 +40,8 @@ export const getPageName = pathName => {
             return PAGES.schedulePage;
         case '/exceptions':
             return PAGES.exceptionsPage;
+        case '/users-settings':
+            return PAGES.usersPage;
         default:
             return PAGES.notFoundPage;
     }

@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 
 import com.androidghost77.schoolbell.exceptions.UserNotFoundException;
+import com.androidghost77.schoolbell.exceptions.UsernameAlreadyExistsException;
 import com.androidghost77.schoolbell.model.User;
 import com.androidghost77.schoolbell.repo.UserRepo;
 import com.androidghost77.schoolbell.security.dto.UserPrincipal;
@@ -53,6 +54,12 @@ public class DbUserDetailsManager implements UserDetailsManager {
 
     @Override
     public void createUser(UserDetails user) {
+        User existingUser = userRepo.findUserByUsername(user.getUsername());
+        if (existingUser != null) {
+            throw new UsernameAlreadyExistsException(String.format("Can't create user with username: %s, " +
+                    "username already exists", user.getUsername()));
+        }
+
         User dbUser = new User();
         dbUser.setUsername(user.getUsername());
         dbUser.setPassword(passwordEncoder.encode(user.getPassword()));

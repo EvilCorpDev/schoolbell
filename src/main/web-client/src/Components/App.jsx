@@ -1,6 +1,7 @@
 import React from 'react'
 import SchedulePage from './SchedulePage'
 import ExceptionsPage from './ExceptionsPage'
+import UsersPage from './UsersPage'
 import Navbar from './Navbar'
 import ReactJumbotron from './ReactJumbotron'
 import {getPageName, JUMBOTRON_INFO, PAGES} from '../utils'
@@ -22,6 +23,7 @@ export default class App extends React.Component {
     render() {
         const scheduleClass = this.state.activePage === PAGES.schedulePage ? 'active' : '';
         const exceptionsClass = this.state.activePage === PAGES.exceptionsPage ? 'active' : '';
+        const usersClass = this.state.activePage === PAGES.usersPage ? 'active' : '';
         const jumboHeader = JUMBOTRON_INFO[this.state.activePage].header;
         const jumboDesc = JUMBOTRON_INFO[this.state.activePage].description;
         return (
@@ -31,7 +33,7 @@ export default class App extends React.Component {
                         <ReactJumbotron header={jumboHeader} description={jumboDesc}/>
                     </div>
                     <div id="react-navbar">
-                        <Navbar scheduleClass={scheduleClass} exceptionsClass={exceptionsClass}
+                        <Navbar scheduleClass={scheduleClass} exceptionsClass={exceptionsClass} usersClass={usersClass}
                                 handlePageClick={this.handlePageClick}/>
                     </div>
                     <div className="container">
@@ -39,6 +41,7 @@ export default class App extends React.Component {
                             <div >
                                 <Route exact path="/" component={SchedulePage} />
                                 <Route path="/exceptions/" component={ExceptionsPage} />
+                                <Route path="/users-settings/" component={UsersPage} />
                             </div>
                         </div>
                     </div>
