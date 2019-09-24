@@ -138,7 +138,6 @@ export default class UsersPage extends React.Component {
         axios.get('/api/user', {
             headers: {'Authorization': "Bearer " + sessionStorage.getItem('jwtToken')}
         }).then(response => {
-            debugger
             let users = response.data;
             users = users.length > 0 ? users : [this.getEmptyUser()];
             this.setState({
