@@ -17,14 +17,18 @@ import com.androidghost77.schoolbell.mapper.ScheduleMapper;
 import com.androidghost77.schoolbell.repo.ExceptionDayRepo;
 import com.androidghost77.schoolbell.repo.ProfileRepo;
 import com.androidghost77.schoolbell.repo.ScheduleRepo;
+import com.androidghost77.schoolbell.repo.UserRepo;
 import com.androidghost77.schoolbell.schedule.BellScheduler;
 import com.androidghost77.schoolbell.schedule.Scheduler;
+import com.androidghost77.schoolbell.security.DbUserDetailsManager;
 import com.androidghost77.schoolbell.service.ExceptionsService;
 import com.androidghost77.schoolbell.service.ProfileScheduleService;
 import com.androidghost77.schoolbell.service.SchedulerService;
+import com.androidghost77.schoolbell.service.UserService;
 import com.androidghost77.schoolbell.service.impl.ExceptionsServiceImpl;
 import com.androidghost77.schoolbell.service.impl.ProfileScheduleServiceImpl;
 import com.androidghost77.schoolbell.service.impl.SchedulerServiceImpl;
+import com.androidghost77.schoolbell.service.impl.UserServiceImpl;
 import com.androidghost77.schoolbell.service.player.Player;
 import com.androidghost77.schoolbell.service.player.impl.AudioPlayer;
 
@@ -55,6 +59,11 @@ public class AppConfig {
                                              ExceptionsService exceptionsService,
                                              ProfileScheduleService profileScheduleService) {
         return new SchedulerServiceImpl(bellScheduler, exceptionsService, profileScheduleService);
+    }
+
+    @Bean
+    public UserService userService(DbUserDetailsManager userDetailsManager, UserRepo userRepo) {
+        return new UserServiceImpl(userDetailsManager, userRepo);
     }
 
     @Bean

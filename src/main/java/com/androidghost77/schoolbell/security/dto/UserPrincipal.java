@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.androidghost77.schoolbell.enums.UserRole;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,10 +18,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserPrincipal implements UserDetails {
 
-    private Long id;
+    private String id;
     private String username;
     private String password;
     private List<? extends GrantedAuthority> authorities = Collections.emptyList();
+
+    public UserRole getUserRole() {
+        return UserRole.valueOf(this.authorities.get(0).getAuthority());
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

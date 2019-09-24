@@ -1,19 +1,26 @@
 import React from 'react'
 import uuidv4 from 'uuid'
 import UserEdit from './UserEdit/'
-import {PASSWORD, ROLE, USERNAME} from '../utils'
-import {faPlus} from '@fortawesome/free-solid-svg-icons'
+import {ALERTS_PARAMS, PASSWORD, ROLE, USERNAME} from '../utils'
+import {faPlus, faSave} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import axios from 'axios'
+import 'react-s-alert/dist/s-alert-default.css'
+import 'react-s-alert/dist/s-alert-css-effects/stackslide.css'
+import Alert from 'react-s-alert'
+import LoginPopup from './popups/LoginPopup'
 
 export default class UsersPage extends React.Component {
 
-    DEFAULT_ROLE = 'moderator';
+    DEFAULT_ROLE = 'MODERATOR';
 
     constructor(props) {
         super(props);
 
         this.state = {
-            users: []
+            users: [],
+            roles: [],
+            deletedUsers: []
         };
 
         this.handleUserFieldChanged = this.handleUserFieldChanged.bind(this);
@@ -21,19 +28,17 @@ export default class UsersPage extends React.Component {
         this.handlePasswordChanged = this.handlePasswordChanged.bind(this);
         this.handleRoleChanged = this.handleRoleChanged.bind(this);
         this.handleDeleteUser = this.handleDeleteUser.bind(this);
+        this.handleUnauthorizedAction = this.handleUnauthorizedAction.bind(this);
     }
 
     componentDidMount() {
-        this.setState({
-            users: [this.getEmptyUser()]
-        })
+        this.getAndSetRoles(() => this.getAndSetUsers());
     }
 
     render() {
-        const {users} = this.state;
-        const userRoles = ['admin', 'moderator'];
+        const {users, roles} = this.state;
         const userEdits = users.map(user => {
-            return <UserEdit key={user.id} user={user} userRoles={userRoles}
+            return <UserEdit key={user.id} user={user} userRoles={roles}
                              handleUsernameChanged={this.handleUsernameChanged}
                              handlePasswordChanged={this.handlePasswordChanged}
                              handleRoleChanged={this.handleRoleChanged}
@@ -44,11 +49,18 @@ export default class UsersPage extends React.Component {
                 <div className="shadow">
                     {userEdits}
                     <div className="row d-flex justify-content-end">
-                        <button type="button" className="btn btn-secondary m-3 mr-5" onClick={this.handleAddUser}>
+                        <button type="button" className="btn btn-secondary mb-3 mt-3" onClick={this.handleAddUser}>
                             <FontAwesomeIcon icon={faPlus}/> Додати користувача
+                        </button>
+                        <button type="button" className="btn btn-info m-3 mr-5" onClick={this.handleSaveUsers}>
+                            <FontAwesomeIcon icon={faSave}/> Зберегти
                         </button>
                     </div>
                 </div>
+                <LoginPopup popupId="loginPopup" handleCallback={this.handleUnauthorizedAction}/>
+                <button className="btn d-none" data-toggle="modal" data-target="#loginPopup"
+                        ref={btn => this.loginBtn = btn}/>
+                <Alert stack={{limit: 3}}/>
             </div>
         )
     }
@@ -84,9 +96,12 @@ export default class UsersPage extends React.Component {
     handleDeleteUser = ev => {
         ev.preventDefault();
         const newUsers = this.state.users.filter(user => user.id !== ev.currentTarget.id);
+        let newDeletedUsers = this.state.deletedUsers.slice();
+        newDeletedUsers.push(ev.currentTarget.id);
 
         this.setState({
-            users: newUsers
+            users: newUsers,
+            deletedUsers: newDeletedUsers
         })
     };
 
@@ -99,6 +114,96 @@ export default class UsersPage extends React.Component {
             users: newUsers
         });
     };
+
+    handleSaveUsers = ev => {
+        ev.preventDefault();
+        const {deletedUsers, users} = this.state;
+        if (deletedUsers.length > 0) {
+            this.deleteUsers(deletedUsers);
+        }
+        this.saveUsers(users, () => this.getAndSetUsers());
+    };
+
+    handleUnauthorizedAction() {
+        const {unauthorizedAction} = this.state;
+        if (unauthorizedAction) {
+            unauthorizedAction();
+        }
+        this.setState({
+            unauthorizedAction: undefined
+        })
+    }
+
+    getAndSetUsers(callback) {
+        axios.get('/api/user', {
+            headers: {'Authorization': "Bearer " + sessionStorage.getItem('jwtToken')}
+        }).then(response => {
+            debugger
+            let users = response.data;
+            users = users.length > 0 ? users : [this.getEmptyUser()];
+            this.setState({
+                users: users
+            }, callback)
+        }).catch(error => {
+            this.showLoginPopup(error, 'Помилка отримання данних від серверу', () => this.getAndSetUsers(callback));
+            console.log(error.response);
+        });
+    }
+
+    getAndSetRoles(callback) {
+        axios.get('/api/user/role', {
+            headers: {'Authorization': "Bearer " + sessionStorage.getItem('jwtToken')}
+        }).then(response => {
+            this.setState({
+                roles: response.data
+            }, callback)
+        }).catch(error => {
+            this.showLoginPopup(error, 'Помилка отримання данних від серверу', () => this.getAndSetRoles(callback));
+            console.log(error.response);
+        });
+    }
+
+    deleteUsers(deletedUsers, callback) {
+        axios.delete('/api/user', {
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': "Bearer " + sessionStorage.getItem('jwtToken')
+            },
+            data: JSON.stringify(deletedUsers)
+        }).then(() => {
+            this.setState({
+                deletedProfileIds: []
+            }, callback)
+        }).catch(error => {
+            const message = error.response.data.shortMessage;
+            this.showLoginPopup(error, 'Помилка видалення користувачів: ' + message,
+                () => this.deleteProfiles(deletedUsers, callback));
+        });
+    }
+
+    saveUsers(users, callback) {
+        axios.post('/api/user', JSON.stringify(users), {
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': "Bearer " + sessionStorage.getItem('jwtToken')
+            }
+        }).then(() => {
+            this.getAndSetUsers(() => Alert.success('Збережено', ALERTS_PARAMS));
+        }).catch(error => {
+            const message = error.response.data.shortMessage;
+            this.showLoginPopup(error, 'Помилка збереження: ' + message, () => this.saveUsers(users, callback));
+        });
+    }
+
+    showLoginPopup(error, errorMsg, unauthorizedAction) {
+        if (error.response.status === 401) {
+            Alert.error('Авторизуйтеся для доступу до ресурсу', ALERTS_PARAMS);
+            this.loginBtn.click();
+            this.setState({unauthorizedAction: unauthorizedAction});
+        } else {
+            Alert.error(errorMsg, ALERTS_PARAMS);
+        }
+    }
 
     getEmptyUser() {
         return {

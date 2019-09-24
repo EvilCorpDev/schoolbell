@@ -48,12 +48,12 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public Long getUserIdFromJWT(String token) {
+    public String getUserIdFromJWT(String token) {
         Claims tokenBody = Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
                 .getBody();
-        return Long.valueOf(tokenBody.getSubject());
+        return tokenBody.getSubject();
     }
 
     public boolean validateToken(String token) {

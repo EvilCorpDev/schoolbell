@@ -65,7 +65,7 @@ export default class LoginPopup extends React.Component {
         }).catch(error => {
             console.log(error.response);
             const message = error.response.data.message;
-            Alert.error("Сталася помилка:" + message, ALERTS_PARAMS);
+            Alert.error("Сталася помилка авторизації:" + message, ALERTS_PARAMS);
         });
     };
 

@@ -66,7 +66,7 @@ export default class SchedulePage extends React.Component {
 
     render() {
         const {profiles, openProfile, saveHover} = this.state;
-        this.setRestartTimer(openProfile.scheduleItems.size !== 0);
+        this.setRestartTimer(openProfile.scheduleItems.length !== 0);
         const saveClass = !saveHover ? "rounded-circle" : "";
         return (
             <div className="schedulePage bg-light p-3 w-100 rounded">

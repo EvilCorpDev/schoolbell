@@ -21,11 +21,11 @@ export default function UserEdit(props) {
             <div className="row pt-4 pl-4">
                 <div className="col-3">
                     <input id={"username" + user.id} type="text" className="form-control" value={user.username}
-                           onChange={handleUsernameChanged}/>
+                           onChange={handleUsernameChanged} placeholder="Ім'я користувача"/>
                 </div>
                 <div className="col-3">
                     <input id={"password" + user.id} type="password" className="form-control" value={user.password}
-                           onChange={handlePasswordChanged}/>
+                           onChange={handlePasswordChanged} placeholder="Пароль користувача"/>
                 </div>
                 <div className="col-3">
                     <select className="form-control" id={"role" + user.id}
